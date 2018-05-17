@@ -30,7 +30,7 @@ namespace ConvenientChests.StackToNearbyChests
 
         private void TryStashNearby()
         {
-            if (Game1.activeClickableMenu is ItemGrabMenu)
+            if (modEntry.CategorizeChests.isActive && Game1.activeClickableMenu is ItemGrabMenu)
                 // Stash to current chest takes priority
                 return;
 

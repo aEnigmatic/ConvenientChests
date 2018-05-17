@@ -46,8 +46,8 @@ namespace ConvenientChests.CategorizeChests.Framework
 
             // find matching prototype
             var result = Prototypes.FirstOrDefault(p => MatchesPrototype(item, p.Value));
-            if (result.Key != null)
-                return result.Key;
+            if (result.Key is ItemKey k)
+                return k;
 
             // build one 
             return CreatePrototype(item);
@@ -140,10 +140,10 @@ namespace ConvenientChests.CategorizeChests.Framework
             ModEntry.staticMonitor.Log($"Created prototype {p} for {item.Name}");
 
             Prototypes.Add(p, item);
-            if (p.ItemType == ItemType.BigCraftable ||ItemBlacklist.Includes(p))
+            if (p.ItemType == ItemType.BigCraftable || ItemBlacklist.Includes(p))
                 return p;
-            
-            // Try to category
+
+            // Try to categorize
             ModEntry.staticMonitor.Log($"Added prototype {p} to category {ChooseCategoryName(p)}");
             Categories[ChooseCategoryName(p)].Add(p);
 
