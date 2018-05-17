@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CategorizeChests")]
+[assembly: AssemblyTitle("ConvenientChests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CategorizeChests")]
-[assembly: AssemblyCopyright("Copyright © Don Collins 2017")]
+[assembly: AssemblyProduct("ConvenientChests")]
+[assembly: AssemblyCopyright("Copyright © aEnigmatic 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3a8de77a-96b3-465a-80a0-bad965626213")]
+[assembly: Guid("1a62c3ab-95ed-4d3a-9eb1-29877d3be168")]
 
 // Version information for an assembly consists of the following four values:
 //
