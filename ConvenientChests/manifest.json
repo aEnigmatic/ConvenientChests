@@ -1,0 +1,10 @@
+{
+  "Name": "Convenient Chests",
+  "Author": "aEnigma",
+  "Version": "1.0.0-beta.1",
+  "Description": "",
+  "UniqueID": "aEnigma.ConvenientChests",
+  "PerSaveConfigs": false,
+  "MinimumApiVersion": "2.6-beta",
+  "EntryDll": "ConvenientChests.dll"
+}
