@@ -7,5 +7,5 @@ Stardew Valley 1.3
 
 ## Thanks to...
 * [Pathoschild](https://github.com/Pathoschild) for [SMAPI](https://github.com/Pathoschild/SMAPI)
-* [Ilyaki](https://github.com/Ilyaki) for StackToNearbyChests](https://github.com/Ilyaki/StackToNearbyChests)
+* [Ilyaki](https://github.com/Ilyaki) for [StackToNearbyChests](https://github.com/Ilyaki/StackToNearbyChests)
 * [doncollins](https://github.com/doncollins) for [CategorizeChests](https://github.com/doncollins/StardewValleyMods)
