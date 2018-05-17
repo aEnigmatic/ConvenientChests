@@ -28,6 +28,25 @@ namespace ConvenientChests.CraftFromChests
             MenuEvents.MenuClosed += OnMenuClosed;
             GameMenuExtension.TabChanged += OnGameMenuTabChanged;
         }
+        
+        private void Hijack()
+        {
+            try
+            {
+                CombineInventories();
+
+                var tabs = GameMenu.getTabs();
+                var page = (StardewValley.Menus.CraftingPage) tabs[GameMenu.craftingTab];
+                page.inventory.actualInventory = UserInventory;
+
+                InputEvents.ButtonReleased += OnButtonEvent;
+            }
+            catch
+            {
+                Monitor.Log("Something went wrong! Consider disabling CraftFromChests.", LogLevel.Alert);
+                Restore();
+            }
+        }
 
         private void Restore()
         {
@@ -35,7 +54,6 @@ namespace ConvenientChests.CraftFromChests
                 return;
 
             // remove cleanup handlers
-            InputEvents.ButtonPressed -= OnButtonEvent;
             InputEvents.ButtonReleased -= OnButtonEvent;
 
             // clean one final time
@@ -85,27 +103,6 @@ namespace ConvenientChests.CraftFromChests
             if (isCookingScreen && hasFridge)
                 yield return Utility.getHomeOfFarmer(Game1.player).fridge.Value.items;
         }
-
-        private void Hijack()
-        {
-            try
-            {
-                CombineInventories();
-
-                var tabs = GameMenu.getTabs();
-                var page = (StardewValley.Menus.CraftingPage) tabs[GameMenu.craftingTab];
-                page.inventory.actualInventory = UserInventory;
-
-                InputEvents.ButtonReleased += OnButtonEvent;
-            }
-            catch
-            {
-                Monitor.Log("Something went wrong! Consider disabling CraftFromChests.", LogLevel.Alert);
-                Restore();
-            }
-        }
-
-
         private void OnGameMenuShown(object sender, EventArgs e) => GameMenu = Game1.activeClickableMenu as GameMenu;
 
         private void OnGameMenuTabChanged(object sender, EventArgs e)
