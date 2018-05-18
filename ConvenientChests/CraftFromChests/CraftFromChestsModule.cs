@@ -7,32 +7,25 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 
-namespace ConvenientChests.CraftFromChests
-{
-    public class CraftFromChestsModule : Module
-    {
-        private GameMenu GameMenu { get; set; }
+namespace ConvenientChests.CraftFromChests {
+    public class CraftFromChestsModule : Module {
+        private GameMenu    GameMenu      { get; set; }
         private IList<Item> UserInventory { get; set; }
 
-        private bool isCraftingScreen => GameMenu?.currentTab == GameMenu.craftingTab;
-        private bool isCookingScreen => isCraftingScreen && GameMenu.GetType() == Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
-        private static bool hasFridge => Utility.getHomeOfFarmer(Game1.player).upgradeLevel > 0;
+        private        bool IsCraftingScreen => GameMenu?.currentTab == GameMenu.craftingTab;
+        private        bool IsCookingScreen  => IsCraftingScreen && GameMenu.GetType() == Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
+        private static bool HasFridge        => Utility.getHomeOfFarmer(Game1.player).upgradeLevel > 0;
 
-        public CraftFromChestsModule(ModEntry modEntry) : base(modEntry)
-        {
-        }
+        public CraftFromChestsModule(ModEntry modEntry) : base(modEntry) { }
 
-        public override void activate()
-        {
-            GameMenuExtension.Shown += OnGameMenuShown;
-            MenuEvents.MenuClosed += OnMenuClosed;
+        public override void activate() {
+            GameMenuExtension.Shown      += OnGameMenuShown;
+            MenuEvents.MenuClosed        += OnMenuClosed;
             GameMenuExtension.TabChanged += OnGameMenuTabChanged;
         }
-        
-        private void Hijack()
-        {
-            try
-            {
+
+        private void Hijack() {
+            try {
                 CombineInventories();
 
                 var tabs = GameMenu.getTabs();
@@ -41,15 +34,13 @@ namespace ConvenientChests.CraftFromChests
 
                 InputEvents.ButtonReleased += OnButtonEvent;
             }
-            catch
-            {
+            catch {
                 Monitor.Log("Something went wrong! Consider disabling CraftFromChests.", LogLevel.Alert);
                 Restore();
             }
         }
 
-        private void Restore()
-        {
+        private void Restore() {
             if (UserInventory == null)
                 return;
 
@@ -61,22 +52,17 @@ namespace ConvenientChests.CraftFromChests
 
             // restore
             Game1.player.Items = UserInventory;
-            UserInventory = null;
+            UserInventory      = null;
         }
 
-        private void CleanupInventories()
-        {
-            foreach (var c in getInventories())
+        private void CleanupInventories() {
+            foreach (var c in GetInventories())
                 for (var index = 0; index < c.Count; index++)
-                {
-                    var i = c[index];
-                    if (i?.Stack < 1)
+                    if (c[index]?.Stack < 1)
                         c[index] = null;
-                }
         }
 
-        private void CombineInventories()
-        {
+        private void CombineInventories() {
             if (UserInventory != null)
                 return;
 
@@ -86,36 +72,39 @@ namespace ConvenientChests.CraftFromChests
             // ... and replace with combined inventory
             var list = new List<Item>();
 
-            foreach (var c in getInventories())
+            foreach (var c in GetInventories())
                 list.AddRange(c.Where(i => i != null));
 
             Game1.player.Items = list;
         }
 
-        private IEnumerable<IList<Item>> getInventories()
-        {
+        private IEnumerable<IList<Item>> GetInventories() {
             yield return UserInventory;
 
-            foreach (var c in Game1.player.getNearbyChests(Config.CraftRadius))
+            foreach (var c in Game1.player.GetNearbyChests(Config.CraftRadius))
                 yield return c.items;
 
             // always add fridge when on cooking screen
-            if (isCookingScreen && hasFridge)
+            if (IsCookingScreen && HasFridge)
                 yield return Utility.getHomeOfFarmer(Game1.player).fridge.Value.items;
         }
-        private void OnGameMenuShown(object sender, EventArgs e) => GameMenu = Game1.activeClickableMenu as GameMenu;
 
-        private void OnGameMenuTabChanged(object sender, EventArgs e)
-        {
-            if (isCraftingScreen)
+        private void OnGameMenuShown(object sender, EventArgs e) {
+            GameMenu = Game1.activeClickableMenu as GameMenu;
+
+            if (IsCraftingScreen)
+                Hijack();
+        }
+
+        private void OnGameMenuTabChanged(object sender, EventArgs e) {
+            if (IsCraftingScreen)
                 Hijack();
 
             else
                 Restore();
         }
 
-        private void OnMenuClosed(object sender, EventArgsClickableMenuClosed e)
-        {
+        private void OnMenuClosed(object sender, EventArgsClickableMenuClosed e) {
             if (GameMenu == null)
                 return;
 
