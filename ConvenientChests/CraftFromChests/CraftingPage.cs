@@ -67,7 +67,7 @@ namespace ConvenientChests.CraftFromChests
             recipes = recipeKeys.Select(r => new CraftingRecipe(r, isCookingScreen)).ToList();
             nearbyChests = this.isCookingScreen
                 ? new List<Chest> {StardewValley.Utility.getHomeOfFarmer(Game1.player).fridge.Value}
-                : Game1.player.getNearbyChests(ModEntry.config.CraftRadius);
+                : Game1.player.GetNearbyChests(ModEntry.config.CraftRadius);
 
 //            var playerRecipes = sourceRecipes.Select(x => x.)
 //            if (!IsCooking)
