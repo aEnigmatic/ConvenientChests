@@ -28,5 +28,11 @@ namespace ConvenientChests.CategorizeChests.Interface
         protected override bool ReceiveLeftClick(int x, int y) => RootWidget.ReceiveLeftClick(new Point(x, y));
         protected override bool ReceiveCursorHover(int x, int y) => RootWidget.ReceiveCursorHover(new Point(x, y));
         protected override bool ReceiveScrollWheelAction(int amount) => RootWidget.ReceiveScrollWheelAction(amount);
+
+
+        public override void Dispose() {
+            base.Dispose();
+            RootWidget?.Dispose();
+        }
     }
 }
