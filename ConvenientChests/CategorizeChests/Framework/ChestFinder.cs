@@ -12,7 +12,7 @@ namespace ConvenientChests.CategorizeChests.Framework
         {
             if (address.LocationType == ChestLocationType.Refrigerator)
             {
-                var house = (FarmHouse) Game1.locations.SingleOrDefault(l => l.uniqueName.Value == address.LocationName);
+                var house = (FarmHouse) Game1.locations.SingleOrDefault(l => l is FarmHouse f && address.LocationName == (f.uniqueName?.Value ?? f.Name));
 
                 if (house == null)
                     throw new InvalidSaveDataException($"Save data contains refrigerator data in {address.LocationName} but location does not exist");
@@ -44,7 +44,6 @@ namespace ConvenientChests.CategorizeChests.Framework
                 throw new InvalidSaveDataException($"Can't find any buildings in location named {location.Name}");
                 
             var building = buildableLocation.buildings.SingleOrDefault(b => b.nameOfIndoors == address.BuildingName);
-                
             if (building == null)
                 throw new InvalidSaveDataException($"Save data contains building data in {address.BuildingName} but building does not exist");
 
