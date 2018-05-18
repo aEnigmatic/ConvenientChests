@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StardewValley;
+using StardewValley.Characters;
 
 namespace ConvenientChests.CategorizeChests.Interface.Widgets
 {
@@ -12,7 +13,7 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets
     /// A positioned, resizable element in the interface
     /// that can also contain other elements.
     /// </summary>
-    public class Widget
+    public class Widget : IDisposable
     {
         Widget _Parent;
         public Widget Parent
@@ -233,6 +234,11 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets
         {
             var containerHeight = (Parent != null) ? Parent.Height : Game1.viewport.Height; // TODO
             Y = containerHeight / 2 - Height / 2;
+        }
+
+        public virtual void Dispose() {
+            foreach (Widget child in Children)
+                child.Dispose();
         }
     }
 }
