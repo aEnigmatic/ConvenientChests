@@ -59,10 +59,10 @@ namespace ConvenientChests.CategorizeChests.Framework
                         break;
 
                     // fridges
-                    case FarmHouse farmHouse when Game1.player.HouseUpgradeLevel >= 1:
+                    case FarmHouse farmHouse when farmHouse.upgradeLevel >= 1:
                         yield return new ChestEntry(
                             ChestDataManager.GetChestData(farmHouse.fridge.Value),
-                            new ChestAddress {LocationName = location.uniqueName.Value, LocationType = ChestLocationType.Refrigerator}
+                            new ChestAddress {LocationName = farmHouse.uniqueName?.Value ?? farmHouse.Name, LocationType = ChestLocationType.Refrigerator}
                         );
                         break;
                 }
