@@ -43,7 +43,6 @@ namespace ConvenientChests.CategorizeChests.Framework
             if (!(location is BuildableGameLocation buildableLocation))
                 throw new InvalidSaveDataException($"Can't find any buildings in location named {location.Name}");
                 
-            ModEntry.staticMonitor.Log(address.LocationName ?? "null" );
             var building = buildableLocation.buildings.SingleOrDefault(b => b.nameOfIndoors == address.BuildingName);
             if (building == null)
                 throw new InvalidSaveDataException($"Save data contains building data in {address.BuildingName} but building does not exist");
