@@ -77,7 +77,10 @@ namespace ConvenientChests.CategorizeChests
         private void onMenuChanged(object sender, EventArgsClickableMenuChanged e)
         {
             if (e.PriorMenu is ItemGrabMenu)
-                clearMenu();
+                if (e.NewMenu is ItemGrabMenu)
+                    return;
+                else
+                    clearMenu();
 
             if (e.NewMenu is ItemGrabMenu itemGrabMenu)
                 createMenu(itemGrabMenu);
