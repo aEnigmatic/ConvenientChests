@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using ConvenientChests.CategorizeChests.Framework;
 using Microsoft.Xna.Framework;
 using StardewValley;
@@ -10,6 +10,16 @@ namespace ConvenientChests.CategorizeChests
     internal static class ItemHelper
     {
         public static ItemKey ToItemKey(this Item item) => new ItemKey(GetItemType(item), GetItemID(item));
+
+        public static Item GetCopy(this Item item)
+        {
+            if (item == null)
+                return null;
+                    
+            var copy = item.getOne();
+            copy.Stack = item.Stack;
+            return copy;
+        }
 
         public static IEnumerable<Item> GetAllItems()
         {
