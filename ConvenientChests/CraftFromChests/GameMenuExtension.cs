@@ -63,7 +63,7 @@ namespace ConvenientChests.CraftFromChests
             if (!(e.PriorMenu is GameMenu))
                 return;
 
-            GraphicsEvents.OnPostRenderGuiEvent -= OnPostRenderGuiEvent;
+            UnregisterTabEvent();
         }
 
 
@@ -74,18 +74,36 @@ namespace ConvenientChests.CraftFromChests
 
         private static void OnPostRenderGuiEvent(object sender, EventArgs e)
         {
-            if (!(Game1.activeClickableMenu is GameMenu gameMenu)) 
+            switch (Game1.activeClickableMenu)
             {
-                ModEntry.staticMonitor.Log($"should not happen: Menu is {Game1.activeClickableMenu?.GetType().ToString() ?? "null"}");
-                GraphicsEvents.OnPostRenderGuiEvent -= OnPostRenderGuiEvent;
-                return;
-            }
-            
-            if (gameMenu.currentTab == _previousTab)
-                return;
+                case TitleMenu _:
+                    // Quit to title
+                    // -> unregister silently
+                    UnregisterTabEvent();
+                    return;
 
-            _previousTab = gameMenu.currentTab;
-            OnTabChanged();
+                case GameMenu gameMenu when gameMenu.currentTab == _previousTab:
+                    // Nothing changed
+                    return;
+
+                case GameMenu gameMenu:
+                    // Tab changed!
+                    _previousTab = gameMenu.currentTab;
+                    OnTabChanged();
+                    break;
+
+                default:
+                    // How did we get here?
+                    ModEntry.staticMonitor.Log($"Unexpected menu: {Game1.activeClickableMenu?.GetType().ToString() ?? "null"}");
+                    UnregisterTabEvent();
+                    return;
+            }
+        }
+
+        private static void UnregisterTabEvent()
+        {
+            GraphicsEvents.OnPostRenderGuiEvent -= OnPostRenderGuiEvent;
+            _previousTab = -1;
         }
     }
 }
