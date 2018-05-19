@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ConvenientChests.StackToNearbyChests;
@@ -6,11 +7,15 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValley.Objects;
 
 namespace ConvenientChests.CraftFromChests {
     public class CraftFromChestsModule : Module {
-        private GameMenu    GameMenu      { get; set; }
-        private IList<Item> UserInventory { get; set; }
+        private GameMenu           GameMenu         { get; set; }
+        private int                UserSlots        { get; set; }
+        private int                UserSlotsEmpty   { get; set; }
+        private IList<Item>        UserInventory    { get; set; }
+        private IList<IList<Item>> CraftInventories { get; set; }
 
         private        bool IsCraftingScreen => GameMenu?.currentTab == GameMenu.craftingTab;
         private        bool IsCookingScreen  => IsCraftingScreen && GameMenu.GetType() == Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
@@ -25,8 +30,12 @@ namespace ConvenientChests.CraftFromChests {
         }
 
         private void Hijack() {
+            var nearbyChests = Game1.player.GetNearbyChests(Config.CraftRadius).Where(c => c.items.Any(i => i != null)).ToList();
+            if (!nearbyChests.Any())
+                return;
+
             try {
-                CombineInventories();
+                CombineInventories(nearbyChests);
 
                 var tabs = GameMenu.getTabs();
                 var page = (StardewValley.Menus.CraftingPage) tabs[GameMenu.craftingTab];
@@ -50,38 +59,66 @@ namespace ConvenientChests.CraftFromChests {
             // clean one final time
             CleanupInventories();
 
-            // restore
-            Game1.player.Items = UserInventory;
-            UserInventory      = null;
+            // restore inventory
+            Game1.player.Items    = UserInventory;
+            Game1.player.MaxItems = UserSlots;
+            UserInventory         = null;
+            CraftInventories      = null;
         }
 
         private void CleanupInventories() {
-            foreach (var c in GetInventories())
-                for (var index = 0; index < c.Count; index++)
-                    if (c[index]?.Stack < 1)
-                        c[index] = null;
+            if (UserInventory == null || CraftInventories == null)
+                return;
+
+            // check for used up items
+            foreach (var c in CraftInventories)
+                for (var i = 0; i < c.Count; i++)
+                    if (c[i]?.Stack < 1)
+                        c[i] = null;
+
+            // check for new items
+            var emptySlots = UserSlotsEmpty;
+            for (var i = 1; i <= emptySlots; i++)
+            {
+                var item = Game1.player.items[Game1.player.MaxItems - i];
+                if (item == null) continue;
+
+                var index = UserInventory.IndexOf(null);
+                if (index == -1)
+                    // No more empty slots
+                    // -> add to hand
+                    return;
+
+                // add a copy to user inventory
+                UserInventory[index] = item;
+                // and reduce empty slots for next check
+                UserSlotsEmpty--;
+            }
         }
 
-        private void CombineInventories() {
+        private void CombineInventories(IEnumerable<Chest> chests) {
             if (UserInventory != null)
                 return;
 
             // store original inventory...
-            UserInventory = Game1.player.Items.ToList();
+            UserSlots        = Game1.player.MaxItems;
+            UserSlotsEmpty   = Game1.player.freeSpotsInInventory();
+            UserInventory    = Game1.player.Items.ToList();
+            CraftInventories = GetInventories(chests).ToList();
 
             // ... and replace with combined inventory
-            var list = new List<Item>();
+            Game1.player.Items    = new List<Item>(CraftInventories.SelectMany(l => l).Where(i => i != null));
+            Game1.player.MaxItems = Game1.player.Items.Count + UserSlotsEmpty;
 
-            foreach (var c in GetInventories())
-                list.AddRange(c.Where(i => i != null));
-
-            Game1.player.Items = list;
+            // ... add empty slots
+            for (int i=0; i < UserSlotsEmpty; i++)
+                Game1.player.Items.Add(null);
         }
 
-        private IEnumerable<IList<Item>> GetInventories() {
+        private IEnumerable<IList<Item>> GetInventories(IEnumerable<Chest> chests) {
             yield return UserInventory;
 
-            foreach (var c in Game1.player.GetNearbyChests(Config.CraftRadius))
+            foreach (var c in chests)
                 yield return c.items;
 
             // always add fridge when on cooking screen
