@@ -12,12 +12,12 @@ using Utility = StardewValley.Utility;
 
 namespace ConvenientChests.CraftFromChests {
     public class CraftFromChestsModule : Module {
-        private GameMenu           GameMenu         { get; set; }
-        private int                UserSlots        { get; set; }
-        private int                UserSlotsEmpty   { get; set; }
-        private IList<Item>        UserInventory    { get; set; }
-        private IList<IList<Item>> CraftInventories { get; set; }
-        private List<List<Item>> CraftInventoriesInitial { get; set; }
+        private GameMenu           GameMenu                { get; set; }
+        private int                UserSlots               { get; set; }
+        private int                UserSlotsEmpty          { get; set; }
+        private IList<Item>        UserInventory           { get; set; }
+        private IList<IList<Item>> CraftInventories        { get; set; }
+        private List<List<Item>>   CraftInventoriesInitial { get; set; }
 
         private        bool IsCraftingScreen => GameMenu?.currentTab == GameMenu.craftingTab;
         private        bool IsCookingScreen  => IsCraftingScreen && GameMenu.GetType() == Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
@@ -47,7 +47,7 @@ namespace ConvenientChests.CraftFromChests {
             }
             catch (Exception e) {
                 Monitor.Log("Something went wrong! Consider disabling CraftFromChests:", LogLevel.Alert);
-                Monitor.Log(e.ToString(), LogLevel.Error);
+                Monitor.Log(e.ToString(),                                                LogLevel.Error);
                 Restore();
             }
         }
@@ -83,8 +83,7 @@ namespace ConvenientChests.CraftFromChests {
 
             // check for new items
             var emptySlots = UserSlotsEmpty;
-            for (var i = 1; i <= emptySlots; i++)
-            {
+            for (var i = 1; i <= emptySlots; i++) {
                 var item = Game1.player.Items[Game1.player.MaxItems - i];
                 if (item == null) continue;
 
@@ -99,71 +98,70 @@ namespace ConvenientChests.CraftFromChests {
                 // and reduce empty slots for next check
                 UserSlotsEmpty--;
             }
-            
+
             // check for changed items
             if (!Config.CraftToChests)
-                for (int i = 1; i < CraftInventories.Count; i++)
-                {
+                for (int i = 1; i < CraftInventories.Count; i++) {
                     var invNew = CraftInventories[i];
                     var invOld = CraftInventoriesInitial[i];
-    
-                    for (int j = 0; j < invNew.Count; j++)
-                    {
+
+                    for (int j = 0; j < invNew.Count; j++) {
                         var iOld = invOld[j];
                         var iNew = invNew[j];
-                        
+
                         if (iNew == null)
                             continue;
-    
+
                         if (iOld == null) {
                             invOld[j] = iNew.GetCopy();
                             continue;
                         }
-    
-                        if (iNew.Stack == iOld.Stack) 
+
+                        if (iNew.Stack == iOld.Stack)
                             continue;
-    
+
                         if (iNew.Stack < iOld.Stack) {
                             // Crafted from stack
-                            modEntry.Monitor.Log($"Stack decreased: {iOld.Name} {iOld.Stack} -> {iNew.Stack}");
+                            // modEntry.Monitor.Log($"Stack decreased: {iOld.Name} {iOld.Stack} -> {iNew.Stack}");
                             iOld.Stack = iNew.Stack;
                         }
                         else {
                             // Crafted TO stack
-                            modEntry.Monitor.Log($"Stack increased: {iOld.Name} {iOld.Stack} -> {iNew.Stack}");
-                            
-                            var o   = iNew.GetCopy();
+                            // modEntry.Monitor.Log($"Stack increased: {iOld.Name} {iOld.Stack} -> {iNew.Stack}");
+
+                            var o = iNew.GetCopy();
                             o.Stack -= iOld.Stack;
-    
+
                             var item  = UserInventory.FirstOrDefault(x => x?.canStackWith(iNew) == true && (x.Stack + o.Stack) <= o.maximumStackSize());
                             var index = UserInventory.IndexOf(item);
                             if (index == -1) {
                                 // Can not move stack
                                 // -> leave it in chest
-                                modEntry.Monitor.Log($"Inv full!");
+                                modEntry.Monitor.Log($"Inventory full! Item remains in chest");
                                 iOld.Stack = iNew.Stack;
                                 continue;
                             }
-                            
-                            modEntry.Monitor.Log($"Moved stack: {o.Name} {o.Stack}/{iNew.Stack} to inventory ({index}: {UserInventory[index]?.Name ?? "null"})!");
-    
+
+                            modEntry.Monitor.Log(
+                                $"Moved stack: {o.Name} {o.Stack}/{iNew.Stack} to inventory ({index}: {UserInventory[index]?.Name ?? "null"})!");
+
                             if (UserInventory[index] == null) {
-                                modEntry.Monitor.Log($"Moved to new stack");
-    
+                                // modEntry.Monitor.Log($"Moved to new stack");
+
                                 UserInventory[index] = o;
                                 UserSlotsEmpty--;
-                            } 
+                            }
                             else {
-                                modEntry.Monitor.Log($"Moved to old stack: {UserInventory[index].Stack} -> {UserInventory[index].Stack + o.Stack}");
+                                // modEntry.Monitor.Log($"Moved to old stack: {UserInventory[index].Stack} -> {UserInventory[index].Stack + o.Stack}");
                                 UserInventory[index].Stack += o.Stack;
                             }
-    
+
                             // update items
                             iNew.Stack = iOld.Stack;
-                            modEntry.Monitor.Log($"Set chest stack to {iNew.Stack}");
+                            // modEntry.Monitor.Log($"Set chest stack to {iNew.Stack}");
                         }
                     }
-            }
+                }
         }
 
         private void CombineInventories(IEnumerable<Chest> chests) {
@@ -175,14 +173,14 @@ namespace ConvenientChests.CraftFromChests {
             UserSlotsEmpty          = Game1.player.freeSpotsInInventory();
             UserInventory           = Game1.player.Items.ToList();
             CraftInventories        = GetInventories(chests).ToList();
-                CraftInventoriesInitial = CraftInventories.Select(l => l.Select(ItemHelper.GetCopy).ToList()).ToList();
+            CraftInventoriesInitial = CraftInventories.Select(l => l.Select(ItemHelper.GetCopy).ToList()).ToList();
 
             // ... and replace with combined inventory
             Game1.player.Items    = new List<Item>(CraftInventories.SelectMany(l => l).Where(i => i != null));
             Game1.player.MaxItems = Game1.player.Items.Count + UserSlotsEmpty;
 
             // ... add empty slots
-            for (int i=0; i < UserSlotsEmpty; i++)
+            for (int i = 0; i < UserSlotsEmpty; i++)
                 Game1.player.Items.Add(null);
         }
 
