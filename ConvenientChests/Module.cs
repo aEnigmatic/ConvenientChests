@@ -6,7 +6,7 @@ namespace ConvenientChests
     {
         public bool isActive { get; protected set; } = false;
         public ModEntry modEntry { get; }
-        public Config Config => ModEntry.config;
+        public Config Config => ModEntry.Config;
         public IMonitor Monitor => modEntry.Monitor;
         
         public Module(ModEntry modEntry) => this.modEntry = modEntry;
