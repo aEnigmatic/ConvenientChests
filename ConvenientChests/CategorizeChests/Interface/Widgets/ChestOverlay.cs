@@ -106,7 +106,7 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
         }
 
         private void StashItems() {
-            ModEntry.staticMonitor.Log("Stash to this chest");
+            ModEntry.Log("Stash to this chest");
 
             if (!GoodTimeToStash())
                 return;

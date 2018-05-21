@@ -3,42 +3,39 @@ using ConvenientChests.CraftFromChests;
 using ConvenientChests.StackToNearbyChests;
 using StardewModdingAPI;
 
-namespace ConvenientChests
-{
-    public class ModEntry : Mod
-    {
-        public static Config config { get; internal set; }
-        internal static IMonitor staticMonitor { get; set; }
-        internal static IModHelper staticHelper { get; set; }
+namespace ConvenientChests {
+    public class ModEntry : Mod {
+        public static   Config     Config        { get; private set; }
+        internal static IModHelper StaticHelper  { get; set; }
+        internal static IMonitor   StaticMonitor { get; set; }
+
+        internal static void Log(string s, LogLevel l = LogLevel.Trace) => StaticMonitor.Log(s, l);
 
         public StashToNearbyChestsModule StashNearby;
-        public CategorizeChestsModule  CategorizeChests;
-        public CraftFromChestsModule CraftFromChests;
-        
-        public override void Entry(IModHelper helper)
-        {
-            config = Helper.ReadConfig<Config>();
+        public CategorizeChestsModule    CategorizeChests;
+        public CraftFromChestsModule     CraftFromChests;
 
-            staticMonitor = Monitor;
-            staticHelper = Helper;
+        public override void Entry(IModHelper helper) {
+            Config = helper.ReadConfig<Config>();
+
+            StaticMonitor = Monitor;
+            StaticHelper  = Helper;
 
             LoadModules();
         }
 
-        private void LoadModules()
-        {
+        private void LoadModules() {
             StashNearby = new StashToNearbyChestsModule(this);
-            if (config.StashToNearbyChests)
-                StashNearby.activate();
+            if (Config.StashToNearbyChests)
+                StashNearby.Activate();
 
             CategorizeChests = new CategorizeChestsModule(this);
-            if (config.CategorizeChests)
-                CategorizeChests.activate();
+            if (Config.CategorizeChests)
+                CategorizeChests.Activate();
 
             CraftFromChests = new CraftFromChestsModule(this);
-            if (config.CraftFromChests)
-                CraftFromChests.activate();
+            if (Config.CraftFromChests)
+                CraftFromChests.Activate();
         }
-
     }
 }

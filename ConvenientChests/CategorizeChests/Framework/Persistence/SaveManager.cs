@@ -23,7 +23,7 @@ namespace ConvenientChests.CategorizeChests.Framework.Persistence
         public void Save(string path)
         {
             var saver = new Saver(Version, Module.ChestDataManager);
-            Module.modEntry.Helper.WriteJsonFile(path, saver.GetSerializableData());
+            Module.ModEntry.Helper.WriteJsonFile(path, saver.GetSerializableData());
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace ConvenientChests.CategorizeChests.Framework.Persistence
         /// </summary>
         public void Load(string path)
         {
-            var model = Module.modEntry.Helper.ReadJsonFile<SaveData>(path) ?? new SaveData();
+            var model = Module.ModEntry.Helper.ReadJsonFile<SaveData>(path) ?? new SaveData();
 
             foreach (var entry in model.ChestEntries)
             {
