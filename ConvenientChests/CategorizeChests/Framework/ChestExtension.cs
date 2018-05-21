@@ -7,7 +7,9 @@ namespace ConvenientChests.CategorizeChests.Framework
 {
     internal static class ChestExtension
     {
-        public static bool containsItem(this Chest chest, Item i) => chest.items.Any(i.canStackWith);
+        public static Chest GetFridge(Farmer player = null) => StardewValley.Utility.getHomeOfFarmer(player ?? Game1.MasterPlayer).fridge.Value;
+        
+        public static bool ContainsItem(this Chest chest, Item i) => chest.items.Any(i.canStackWith);
 
         /// <summary>
         /// Attempt to move as much as possible of the player's inventory into the given chest

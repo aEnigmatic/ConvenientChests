@@ -23,7 +23,7 @@ namespace ConvenientChests.StackToNearbyChests {
                               .Where(i => i != null)
                               .ToList();
 
-            ModEntry.staticMonitor.Log("Stash to nearby");
+            ModEntry.Log("Stash to nearby");
 //            ChestMod.staticMonitor.Log($"Trying to move: " + string.Join(", ", items.Select(i => i.Name)));
 
             var movedAtLeastOne = false;

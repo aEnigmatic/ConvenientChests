@@ -137,14 +137,14 @@ namespace ConvenientChests.CategorizeChests.Framework
         {
             var p = new ItemKey(ItemHelper.GetItemType(item), ItemHelper.GetItemID(item));
 
-            ModEntry.staticMonitor.Log($"Created prototype {p} for {item.Name}");
+            ModEntry.Log($"Created prototype {p} for {item.Name}");
 
             Prototypes.Add(p, item);
             if (p.ItemType == ItemType.BigCraftable || ItemBlacklist.Includes(p))
                 return p;
 
             // Try to categorize
-            ModEntry.staticMonitor.Log($"Added prototype {p} to category {ChooseCategoryName(p)}");
+            ModEntry.Log($"Added prototype {p} to category {ChooseCategoryName(p)}");
             Categories[ChooseCategoryName(p)].Add(p);
 
             return p;

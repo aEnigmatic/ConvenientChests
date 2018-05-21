@@ -1,16 +1,14 @@
 ﻿using StardewModdingAPI;
 
-namespace ConvenientChests
-{
-    public abstract class Module
-    {
-        public bool isActive { get; protected set; } = false;
-        public ModEntry modEntry { get; }
-        public Config Config => ModEntry.config;
-        public IMonitor Monitor => modEntry.Monitor;
-        
-        public Module(ModEntry modEntry) => this.modEntry = modEntry;
+namespace ConvenientChests {
+    public abstract class Module {
+        public bool     IsActive { get; protected set; } = false;
+        public ModEntry ModEntry { get; }
+        public Config   Config   => ModEntry.Config;
+        public IMonitor Monitor  => ModEntry.Monitor;
 
-        public abstract void activate();
+        public Module(ModEntry modEntry) => ModEntry = modEntry;
+
+        public abstract void Activate();
     }
 }
