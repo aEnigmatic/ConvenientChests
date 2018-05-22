@@ -6,19 +6,20 @@ using StardewModdingAPI;
 namespace ConvenientChests {
     public class ModEntry : Mod {
         public static   Config     Config        { get; private set; }
-        internal static IModHelper staticHelper  { get; set; }
-        internal static IMonitor   staticMonitor { get; set; }
-        internal static void       Log(string s, LogLevel l = LogLevel.Debug) => staticMonitor.Log(s, l);
+        internal static IModHelper StaticHelper  { get; private set; }
+        internal static IMonitor   StaticMonitor { get; private set; }
 
-        public StashToNearbyChestsModule StashNearby;
-        public CategorizeChestsModule    CategorizeChests;
-        public CraftFromChestsModule     CraftFromChests;
+        internal static void Log(string s, LogLevel l = LogLevel.Trace) => StaticMonitor.Log(s, l);
+
+        public static StashToNearbyChestsModule StashNearby;
+        public static CategorizeChestsModule    CategorizeChests;
+        public static CraftFromChestsModule     CraftFromChests;
 
         public override void Entry(IModHelper helper) {
-            Config = Helper.ReadConfig<Config>();
+            Config = helper.ReadConfig<Config>();
 
-            staticMonitor = Monitor;
-            staticHelper  = Helper;
+            StaticMonitor = Monitor;
+            StaticHelper  = Helper;
 
             LoadModules();
         }
@@ -26,15 +27,15 @@ namespace ConvenientChests {
         private void LoadModules() {
             StashNearby = new StashToNearbyChestsModule(this);
             if (Config.StashToNearbyChests)
-                StashNearby.activate();
+                StashNearby.Activate();
 
             CategorizeChests = new CategorizeChestsModule(this);
             if (Config.CategorizeChests)
-                CategorizeChests.activate();
+                CategorizeChests.Activate();
 
             CraftFromChests = new CraftFromChestsModule(this);
             if (Config.CraftFromChests)
-                CraftFromChests.activate();
+                CraftFromChests.Activate();
         }
     }
 }

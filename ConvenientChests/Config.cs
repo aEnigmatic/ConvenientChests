@@ -12,7 +12,6 @@ namespace ConvenientChests
         public Buttons? StashButton { get; set; } = Buttons.RightStick;
 
         public bool CraftFromChests { get; set; } = true;
-        public bool CraftToChests { get; set; } = true;
         public int CraftRadius { get; set; } = 5;
     }
 }

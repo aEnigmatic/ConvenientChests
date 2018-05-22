@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
-using ConvenientChests.CategorizeChests.Framework;
+using ConvenientChests.StackToNearbyChests;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Objects;
@@ -19,9 +17,9 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
         private readonly InventoryMenu.highlightThisItem DefaultChestHighlighter;
         private readonly InventoryMenu.highlightThisItem DefaultInventoryHighlighter;
 
-        private TextButton   OpenButton;
-        private TextButton   StashButton;
-        private CategoryMenu CategoryMenu;
+        private TextButton   OpenButton   { get; set; }
+        private TextButton   StashButton  { get; set; }
+        private CategoryMenu CategoryMenu { get; set; }
 
         public ChestOverlay(CategorizeChestsModule module, Chest chest, ItemGrabMenu menu, ITooltipManager tooltipManager) {
             Module         = module;
@@ -34,7 +32,6 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
             DefaultInventoryHighlighter = InventoryMenu.highlightMethod;
 
             AddButtons();
-            ControlEvents.ControllerButtonPressed -= ControlEventsOnControllerButtonPressed;
         }
 
         protected override void OnParent(Widget parent) {
@@ -72,9 +69,9 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
         }
 
         private string ChooseStashButtonLabel() {
-            return Module.Config.StashKey == Keys.None 
-                ? "Stash" 
-                : $"Stash ({Module.Config.StashKey})";
+            return Module.Config.StashKey == Keys.None
+                       ? "Stash"
+                       : $"Stash ({Module.Config.StashKey})";
         }
 
         private void ToggleMenu() {
@@ -105,30 +102,7 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
             SetItemsClickable(true);
         }
 
-        private void StashItems() {
-            ModEntry.staticMonitor.Log("Stash to this chest");
-
-            if (!GoodTimeToStash())
-                return;
-
-            Chest.dumpItemsToChest(Game1.player.Items.Where(i => Module.ChestAcceptsItem(Chest, i)));
-        }
-
-        public override bool ReceiveKeyPress(Keys input) {
-            if (input != Module.Config.StashKey)
-                return PropagateKeyPress(input);
-
-            StashItems();
-            return true;
-        }
-
-        private void ControlEventsOnControllerButtonPressed(object sender, EventArgsControllerButtonPressed e) {
-            if (e.ButtonPressed != Module.Config.StashButton)
-                return;
-
-            StashItems();
-        }
-
+        private void StashItems() => StackLogic.StashToChest(Chest);
 
         public override bool ReceiveLeftClick(Point point) {
             var hit = PropagateLeftClick(point);
@@ -145,19 +119,9 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
                 InventoryMenu.highlightMethod          = DefaultInventoryHighlighter;
             }
             else {
-                ItemGrabMenu.inventory.highlightMethod = item => false;
-                InventoryMenu.highlightMethod          = item => false;
+                ItemGrabMenu.inventory.highlightMethod = InventoryMenu.highlightNoItems;
+                InventoryMenu.highlightMethod          = InventoryMenu.highlightNoItems;
             }
-        }
-
-        private bool GoodTimeToStash() => ItemsAreClickable() && ItemGrabMenu.heldItem == null;
-
-        private bool ItemsAreClickable() => ItemGrabMenu.inventory.actualInventory.Any(item => ItemGrabMenu.inventory.highlightMethod(item));
-
-        public override void Dispose() {
-            base.Dispose();
-
-            ControlEvents.ControllerButtonPressed -= ControlEventsOnControllerButtonPressed;
         }
     }
 }
