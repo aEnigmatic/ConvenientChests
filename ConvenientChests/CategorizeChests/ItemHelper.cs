@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ConvenientChests.CategorizeChests.Framework;
 using Microsoft.Xna.Framework;
 using StardewValley;
@@ -13,9 +14,8 @@ namespace ConvenientChests.CategorizeChests {
             if (item == null)
                 return null;
 
-            Item copy = item.getOne();
+            var copy = item.getOne();
             copy.Stack = item.Stack;
-
             return copy;
         }
 
@@ -164,29 +164,26 @@ namespace ConvenientChests.CategorizeChests {
             foreach (var item in GetRings()) yield return item;
         }
 
-        private static IEnumerable<Item> GetWeapons() {
-            foreach (var id in Game1.content.Load<Dictionary<int, string>>("Data\\weapons").Keys) {
-                if (id >= 32 && id <= 34)
-                    yield return new Slingshot(id);
-
-                yield return new MeleeWeapon(id);
-            }
+        public static IEnumerable<Item> GetWeapons() {
+            foreach (var e in Game1.content.Load<Dictionary<int, string>>("Data\\weapons"))
+                if (e.Value.Split('/')[8] == "4")
+                    yield return new Slingshot(e.Key);
+                
+                else
+                    yield return new MeleeWeapon(e.Key);
         }
+
 
         private static IEnumerable<Item> GetRings() {
             for (var id = Ring.ringLowerIndexRange; id <= Ring.ringUpperIndexRange; id++)
                 yield return new Ring(id);
         }
 
-        private static IEnumerable<Item> GetHats() {
-            foreach (var id in Game1.content.Load<Dictionary<int, string>>("Data\\hats").Keys)
-                yield return new Hat(id);
-        }
+        private static IEnumerable<Item> GetHats()
+            => Game1.content.Load<Dictionary<int, string>>("Data\\hats").Keys.Select(id => new Hat(id));
 
-        private static IEnumerable<Item> GetBoots() {
-            foreach (var id in Game1.content.Load<Dictionary<int, string>>("Data\\Boots").Keys)
-                yield return new Boots(id);
-        }
+        private static IEnumerable<Item> GetBoots()
+            => Game1.content.Load<Dictionary<int, string>>("Data\\hats").Keys.Select(id => new Boots(id));
 
         private static IEnumerable<Tool> GetTools() {
             for (var quality = Tool.stone; quality <= Tool.iridium; quality++) {
@@ -230,6 +227,11 @@ namespace ConvenientChests.CategorizeChests {
 
                 case Tool _:
                     return ItemType.Tool;
+
+                case Fence f:
+                    return f.isGate.Value
+                               ? ItemType.Gate
+                               : ItemType.Object;
 
                 case Object _:
                     switch (item.Category) {

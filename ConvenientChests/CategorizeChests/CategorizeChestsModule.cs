@@ -15,17 +15,16 @@ namespace ConvenientChests.CategorizeChests {
         internal IItemDataManager  ItemDataManager  { get; } = new ItemDataManager();
         internal IChestDataManager ChestDataManager { get; } = new ChestDataManager();
         internal ChestFinder       ChestFinder      { get; } = new ChestFinder();
-        internal SaveManager       SaveManager      { get; set; }
 
-        internal static string SaveDirectory => Path.Combine(ModEntry.StaticHelper.DirectoryPath, "savedata");
-        internal static string SavePath      => Path.Combine(ModEntry.StaticHelper.DirectoryPath, "savedata", $"{Constants.SaveFolderName}.json");
+        protected string      SaveDirectory => Path.Combine(ModEntry.Helper.DirectoryPath, "savedata");
+        protected string      SavePath      => Path.Combine(ModEntry.Helper.DirectoryPath, "savedata", Constants.SaveFolderName + ".json");
+        private   SaveManager SaveManager   { get; set; }
 
 
         private WidgetHost WidgetHost { get; set; }
 
-        // public bool ChestAcceptsItem(Chest chest, Item item) => ChestAcceptsItem(chest, item.ToItemKey());
-        internal bool ChestAcceptsItem(Chest chest, Item    item)    => ChestAcceptsItem(chest, ItemDataManager.GetKey(item));
-        internal bool ChestAcceptsItem(Chest chest, ItemKey itemKey) => itemKey != null && ChestDataManager.GetChestData(chest).Accepts(itemKey);
+        internal bool ChestAcceptsItem(Chest chest, Item    item)    => item != null && ChestAcceptsItem(chest, ItemDataManager.GetItemKey(item));
+        internal bool ChestAcceptsItem(Chest chest, ItemKey itemKey) => ChestDataManager.GetChestData(chest).Accepts(itemKey);
 
         public CategorizeChestsModule(ModEntry modEntry) : base(modEntry) {
             if (!Directory.Exists(SaveDirectory))

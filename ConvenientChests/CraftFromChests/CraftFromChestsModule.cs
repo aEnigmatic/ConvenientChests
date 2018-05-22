@@ -48,8 +48,8 @@ namespace ConvenientChests.CraftFromChests {
             if (!isCookingScreen)
                 yield break;
 
-            var house = Game1.player.currentLocation as FarmHouse ?? Utility.getHomeOfFarmer(Game1.player);
-            if (house.upgradeLevel == 0)
+            var house = Game1.player.currentLocation as FarmHouse ?? Utility.getHomeOfFarmer(Game1.player) ?? null;
+            if (house == null || house.upgradeLevel == 0)
                 yield break;
 
             var fridge = house.fridge.Value;

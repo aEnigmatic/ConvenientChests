@@ -1,14 +1,35 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using StardewValley;
+using StardewValley.Locations;
 using StardewValley.Objects;
 
-namespace ConvenientChests.CategorizeChests.Framework
-{
-    internal static class ChestExtension
-    {
-        public static Chest GetFridge(Farmer player = null) => StardewValley.Utility.getHomeOfFarmer(player ?? Game1.MasterPlayer).fridge.Value;
+namespace ConvenientChests.CategorizeChests.Framework {
+    internal static class ChestExtension {
+        public static Chest GetFridge(Farmer player) {
+            if (Game1.player.IsMainPlayer)
+                return StardewValley.Utility.getHomeOfFarmer(player).fridge.Value;
+
+            if (!(Game1.currentLocation is FarmHouse f))
+                throw new Exception("Cooking from the outside?");
+
+            if (f.owner != player)
+                ModEntry.Log($"Could not get fridge for player '{player.Name}' coz in wrong house.");
+
+            return f.fridge.Value;
+        }
         
+        public static Chest GetLocalFridge(Farmer player) {
+            if (Game1.currentLocation is FarmHouse f) 
+                return f.fridge.Value;
+            
+            if (Game1.player.IsMainPlayer)
+                return StardewValley.Utility.getHomeOfFarmer(player).fridge.Value;
+            
+            throw new Exception("Cooking from the outside as farmhand?");
+        }
+
         public static bool ContainsItem(this Chest chest, Item i) => chest.items.Any(i.canStackWith);
 
         /// <summary>
@@ -19,10 +40,9 @@ namespace ConvenientChests.CategorizeChests.Framework
         /// <param name="items">Items to put in</param>
         ///
         /// <returns>List of Items that were successfully moved into the chest</returns>
-        public static List<Item> dumpItemsToChest(this Chest chest, IEnumerable<Item> items)
-        {
-            var changedItems = items.Where(item => item != null && tryPutItemInChest(chest, item)).ToList();
-            
+        public static List<Item> DumpItemsToChest(this Chest chest, IEnumerable<Item> items) {
+            var changedItems = items.Where(item => item != null && TryPutItemInChest(chest, item)).ToList();
+
             return changedItems;
         }
 
@@ -34,11 +54,9 @@ namespace ConvenientChests.CategorizeChests.Framework
         /// <param name="item">The items to put in the chest.</param>
         ///
         /// <returns>True if at least some of the stack was moved into the chest.</returns>
-        public static bool tryPutItemInChest(Chest chest, Item item)
-        {
+        public static bool TryPutItemInChest(Chest chest, Item item) {
             var remainder = chest.addItem(item);
-            if (remainder == null)
-            {
+            if (remainder == null) {
                 Game1.player.removeItemFromInventory(item);
                 return true;
             }
@@ -55,7 +73,7 @@ namespace ConvenientChests.CategorizeChests.Framework
         /// </summary>
         /// <returns>Whether at least one slot is empty.</returns>
         /// <param name="chest">The chest to check.</param>
-        public static bool hasEmptySlots(this Chest chest)
+        public static bool HasEmptySlots(this Chest chest)
             => chest.items.Count < Chest.capacity || chest.items.Any(i => i == null);
     }
 }

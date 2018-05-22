@@ -6,14 +6,14 @@ using StardewModdingAPI;
 namespace ConvenientChests {
     public class ModEntry : Mod {
         public static   Config     Config        { get; private set; }
-        internal static IModHelper StaticHelper  { get; set; }
-        internal static IMonitor   StaticMonitor { get; set; }
+        internal static IModHelper StaticHelper  { get; private set; }
+        internal static IMonitor   StaticMonitor { get; private set; }
 
         internal static void Log(string s, LogLevel l = LogLevel.Trace) => StaticMonitor.Log(s, l);
 
-        public StashToNearbyChestsModule StashNearby;
-        public CategorizeChestsModule    CategorizeChests;
-        public CraftFromChestsModule     CraftFromChests;
+        public static StashToNearbyChestsModule StashNearby;
+        public static CategorizeChestsModule    CategorizeChests;
+        public static CraftFromChestsModule     CraftFromChests;
 
         public override void Entry(IModHelper helper) {
             Config = helper.ReadConfig<Config>();
