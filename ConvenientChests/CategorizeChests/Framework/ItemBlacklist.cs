@@ -13,7 +13,8 @@ namespace ConvenientChests.CategorizeChests.Framework
         /// </summary>
         /// <returns>Whether the key is blacklisted.</returns>
         /// <param name="itemKey">Item key to check.</param>
-        public static bool Includes(ItemKey itemKey) => itemKey.ItemType == ItemType.BigCraftable || BlacklistedItemKeys.Contains(itemKey);
+        public static bool Includes(ItemKey itemKey) => 
+            itemKey.ItemType == ItemType.BigCraftable ||itemKey.ItemType == ItemType.Furniture || BlacklistedItemKeys.Contains(itemKey);
 
         private static readonly HashSet<ItemKey> BlacklistedItemKeys = new HashSet<ItemKey> {
             // stones
