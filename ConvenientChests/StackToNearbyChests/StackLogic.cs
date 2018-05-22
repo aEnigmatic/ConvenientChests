@@ -11,35 +11,42 @@ using Object = StardewValley.Object;
 
 namespace ConvenientChests.StackToNearbyChests {
     public static class StackLogic {
+        internal static Func<Chest, Item, bool> AcceptingFunction
+            => ModEntry.CategorizeChests.IsActive
+                   ? (chest, i) => ModEntry.CategorizeChests.ChestAcceptsItem(chest, i) || chest.ContainsItem(i)
+                   : (Func<Chest, Item, bool>) ((chest, i) => chest.ContainsItem(i));
+
         public static IEnumerable<Chest> GetNearbyChests(this Farmer farmer, int radius)
             => GetNearbyChests(farmer.currentLocation, farmer.getTileLocation(), radius);
 
-        public static void StashToNearbyChests(int radius, Func<Chest, Item, bool> acceptingFunction) {
-            if (Game1.player.currentLocation == null)
-                return;
+        public static void StashToChest(Chest chest) {
+            ModEntry.Log("Stash to current chest");
+
+            var inventory = Game1.player.Items.Where(i => i != null).ToList();
+            var toBeMoved = inventory.Where(i => AcceptingFunction(chest, i)).ToList();
+
+            if (toBeMoved.Any() && chest.DumpItemsToChest(toBeMoved).Any())
+                Game1.playSound(Game1.soundBank.GetCue("pickUpItem").Name);
+        }
+
+        public static void StashToNearbyChests(int radius) {
+            ModEntry.Log("Stash to nearby chests");
 
             var farmer = Game1.player;
             var items = farmer.Items
                               .Where(i => i != null)
                               .ToList();
 
-            ModEntry.Log("Stash to nearby");
-//            ChestMod.staticMonitor.Log($"Trying to move: " + string.Join(", ", items.Select(i => i.Name)));
 
             var movedAtLeastOne = false;
 
             foreach (var chest in farmer.GetNearbyChests(radius)) {
-//                ChestMod.staticMonitor.Log($"\tFound chest at {chest.TileLocation}");
-                var moveItems = items
-                               .Where(i => acceptingFunction(chest, i))
-                               .ToList();
+                var moveItems = items.Where(i => AcceptingFunction(chest, i)).ToList();
 
                 if (!moveItems.Any())
                     continue;
 
-//                ChestMod.staticMonitor.Log($"\t\tTrying to move: {string.Join(", ", moveItems.Select(i => i.Name))}");
-
-                if (chest.dumpItemsToChest(moveItems).Any())
+                if (chest.DumpItemsToChest(moveItems).Any())
                     movedAtLeastOne = true;
             }
 
@@ -59,7 +66,7 @@ namespace ConvenientChests.StackToNearbyChests {
             switch (location) {
                 // fridge
                 case FarmHouse farmHouse when farmHouse.upgradeLevel > 0:
-                    if (InRadius(radius, point, farmHouse.getKitchenStandingSpot().X, farmHouse.getKitchenStandingSpot().Y - 2))
+                    if (InRadius(radius, point, farmHouse.getKitchenStandingSpot().X + 1, farmHouse.getKitchenStandingSpot().Y - 2))
                         yield return farmHouse.fridge.Value;
                     break;
 
