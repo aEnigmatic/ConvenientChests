@@ -46,11 +46,18 @@ namespace ConvenientChests.CategorizeChests.Framework {
                 throw new Exception();
 
             var key = CreateItemKey(item);
-            if (Prototypes.ContainsKey(key) || ItemBlacklist.Includes(key))
+            if (Prototypes.ContainsKey(key))
                 return key;
 
-            var category = GetCategoryName(key);
+            // Add to prototypes
             Prototypes.Add(key, item);
+            
+            var category = GetCategoryName(key);
+            ModEntry.Log($"Added prototype for '{item.DisplayName}' ({key}) to category '{category}'", LogLevel.Debug);
+
+            // Add to categories, if not blacklisted
+            if (ItemBlacklist.Includes(key))
+                return key;
 
             if (!Categories.ContainsKey(category))
                 Categories.Add(category, new List<ItemKey>());
@@ -58,7 +65,6 @@ namespace ConvenientChests.CategorizeChests.Framework {
             if (!Categories[category].Contains(key))
                 Categories[category].Add(key);
 
-            ModEntry.Log($"Added prototype for '{item.DisplayName}' ({key}) to category '{category}'", LogLevel.Debug);
 
             return key;
         }
