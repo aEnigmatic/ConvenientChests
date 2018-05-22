@@ -115,7 +115,6 @@
     <Compile Include="CraftFromChests\CraftingRecipeExtension.cs" />
     <Compile Include="CraftFromChests\MenuListener.cs" />
     <Compile Include="ModEntry.cs" />
-    <Compile Include="CraftFromChests\InventoryHelper.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="StackToNearbyChests\StackLogic.cs" />
     <Compile Include="StackToNearbyChests\StashToNearbyChestsModule.cs" />

@@ -12,6 +12,7 @@
         Ring,
         Tool,
         Wallpaper,
-        Weapon
+        Weapon,
+        Gate
     }
 }
