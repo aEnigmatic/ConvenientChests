@@ -218,10 +218,10 @@ namespace ConvenientChests.CraftFromChests {
                 return;
 
             var items   = fridge.items.ToList();
-            var cooking = Cooking;
+            var cooking = HoveredRecipe.isCookingRecipe;
 
             // set
-            Cooking = true;
+            HoveredRecipe.isCookingRecipe = true;
             fridge.items.Set(Inventory);
             fridge.items.MarkClean();
 
@@ -229,7 +229,7 @@ namespace ConvenientChests.CraftFromChests {
             drawHoverText(b, " ", Game1.smallFont, offset, offset, -1, HoveredRecipe.DisplayName, -1, buffs, HoveredItem, 0, -1, -1, -1, -1, 1, HoveredRecipe);
 
             // revert
-            Cooking = cooking;
+            HoveredRecipe.isCookingRecipe = cooking;
             fridge.items.Set(items);
             fridge.items.MarkClean();
         }
