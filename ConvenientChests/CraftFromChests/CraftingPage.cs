@@ -64,10 +64,12 @@ namespace ConvenientChests.CraftFromChests {
         }
 
         public CraftingPage(StardewValley.Menus.CraftingPage craftingPage, bool cooking, List<IList<Item>> inventories) : this(
-            craftingPage.xPositionOnScreen, craftingPage.yPositionOnScreen,
-            craftingPage.width, craftingPage.height,
-            cooking, inventories
-        ) { }
+                                                                                                                               craftingPage.xPositionOnScreen,
+                                                                                                                               craftingPage.yPositionOnScreen,
+                                                                                                                               craftingPage.width,
+                                                                                                                               craftingPage.height,
+                                                                                                                               cooking, inventories
+                                                                                                                              ) { }
 
         private bool PlayerHasMaterials(CraftingRecipe craftingRecipe) => craftingRecipe.doesFarmerHaveIngredientsInInventory(Inventory);
 
@@ -100,24 +102,25 @@ namespace ConvenientChests.CraftFromChests {
         protected virtual void ClickCraftingRecipe(CraftingRecipe recipe, bool playSound = true) {
             var newItem = recipe.createItem();
 
-            // check if hand is empty or can merge with hand
-            if (HeldItem                          != null && !HeldItem.canStackWith(newItem) &&
-                HeldItem.getRemainingStackSpace() < recipe.numberProducedPerCraft) {
-                // otherwise, try to stash held item
-                if (!Game1.player.couldInventoryAcceptThisItem(HeldItem))
-                    return;
-
-                Game1.player.addItemToInventoryBool(HeldItem);
-                HeldItem = null;
-            }
-
-            recipe.ConsumeIngredients(Inventories);
-
+            // check if hand is empty
             if (HeldItem == null)
                 HeldItem = newItem;
 
-            else
-                HeldItem.Stack += newItem.Stack;
+            // or item can be added to hand
+            else if (HeldItem.canStackWith(newItem) && HeldItem.getRemainingStackSpace() <= recipe.numberProducedPerCraft)
+                HeldItem.Stack += recipe.numberProducedPerCraft;
+
+            // or stashed to inventory
+            else if (Game1.player.couldInventoryAcceptThisItem(HeldItem)) {
+                Game1.player.addItemToInventoryBool(HeldItem);
+                HeldItem = newItem;
+            }
+
+            // otherwise abort
+            else return;
+
+            // craft item
+            recipe.ConsumeIngredients(Inventories);
 
             if (playSound)
                 Game1.playSound("coin");
@@ -132,6 +135,13 @@ namespace ConvenientChests.CraftFromChests {
                 Game1.player.craftingRecipes[recipe.name] += recipe.numberProducedPerCraft;
                 Game1.stats.checkForCraftingAchievements();
             }
+
+            // Handle gamepad
+            if (!Game1.options.gamepadControls || !Game1.player.couldInventoryAcceptThisItem(HeldItem))
+                return;
+
+            Game1.player.addItemToInventoryBool(HeldItem);
+            HeldItem = null;
         }
 
         public override void draw(SpriteBatch b) {
@@ -165,7 +175,6 @@ namespace ConvenientChests.CraftFromChests {
 
             if (upButton != null && CurrentPageIndex > 0)
                 upButton.draw(b);
-
 
             if (Cooking)
                 drawMouse(b);
