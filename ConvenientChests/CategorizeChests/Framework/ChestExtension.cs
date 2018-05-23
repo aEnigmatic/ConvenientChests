@@ -7,25 +7,14 @@ using StardewValley.Objects;
 
 namespace ConvenientChests.CategorizeChests.Framework {
     internal static class ChestExtension {
-        public static Chest GetFridge(Farmer player) {
-            if (Game1.player.IsMainPlayer)
-                return StardewValley.Utility.getHomeOfFarmer(player).fridge.Value;
+        public static Chest GetFridge(StardewValley.Farmer player) => StardewValley.Utility.getHomeOfFarmer(player).fridge;
 
-            if (!(Game1.currentLocation is FarmHouse f))
-                throw new Exception("Cooking from the outside?");
-
-            if (f.owner != player)
-                ModEntry.Log($"Could not get fridge for player '{player.Name}' coz in wrong house.");
-
-            return f.fridge.Value;
-        }
-        
-        public static Chest GetLocalFridge(Farmer player) {
+        public static Chest GetLocalFridge(StardewValley.Farmer player) {
             if (Game1.currentLocation is FarmHouse f) 
-                return f.fridge.Value;
+                return f.fridge;
             
             if (Game1.player.IsMainPlayer)
-                return StardewValley.Utility.getHomeOfFarmer(player).fridge.Value;
+                return StardewValley.Utility.getHomeOfFarmer(player).fridge;
             
             throw new Exception("Cooking from the outside as farmhand?");
         }

@@ -119,8 +119,8 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
                 InventoryMenu.highlightMethod          = DefaultInventoryHighlighter;
             }
             else {
-                ItemGrabMenu.inventory.highlightMethod = InventoryMenu.highlightNoItems;
-                InventoryMenu.highlightMethod          = InventoryMenu.highlightNoItems;
+                ItemGrabMenu.inventory.highlightMethod = i => false;
+                InventoryMenu.highlightMethod          = i => false;
             }
         }
     }

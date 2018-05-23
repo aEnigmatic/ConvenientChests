@@ -16,7 +16,7 @@ namespace ConvenientChests.StackToNearbyChests {
                    ? (chest, i) => ModEntry.CategorizeChests.ChestAcceptsItem(chest, i) || chest.ContainsItem(i)
                    : (Func<Chest, Item, bool>) ((chest, i) => chest.ContainsItem(i));
 
-        public static IEnumerable<Chest> GetNearbyChests(this Farmer farmer, int radius)
+        public static IEnumerable<Chest> GetNearbyChests(this StardewValley.Farmer farmer, int radius)
             => GetNearbyChests(farmer.currentLocation, farmer.getTileLocation(), radius);
 
         public static void StashToChest(Chest chest) {
@@ -36,7 +36,6 @@ namespace ConvenientChests.StackToNearbyChests {
             var items = farmer.Items
                               .Where(i => i != null)
                               .ToList();
-
 
             var movedAtLeastOne = false;
 
@@ -62,28 +61,27 @@ namespace ConvenientChests.StackToNearbyChests {
             foreach (Chest c in GetNearbyObjects<Chest>(location, point, radius))
                 yield return c;
 
-
             switch (location) {
                 // fridge
                 case FarmHouse farmHouse when farmHouse.upgradeLevel > 0:
                     if (InRadius(radius, point, farmHouse.getKitchenStandingSpot().X + 1, farmHouse.getKitchenStandingSpot().Y - 2))
-                        yield return farmHouse.fridge.Value;
+                        yield return farmHouse.fridge;
                     break;
 
                 // buildings
                 case BuildableGameLocation l:
-                    foreach (var building in l.buildings.Where(b => InRadius(radius, point, b.tileX.Value, b.tileY.Value)))
+                    foreach (var building in l.buildings.Where(b => InRadius(radius, point, b.tileX, b.tileY)))
                         if (building is JunimoHut junimoHut)
-                            yield return junimoHut.output.Value;
+                            yield return junimoHut.output;
 
                         else if (building is Mill mill)
-                            yield return mill.output.Value;
+                            yield return mill.output;
                     break;
             }
         }
 
         private static IEnumerable<T> GetNearbyObjects<T>(GameLocation location, Vector2 point, int radius) where T : Object =>
-            location.Objects.Pairs
+            location.Objects
                     .Where(p => p.Value is T && InRadius(radius, point, p.Key))
                     .Select(p => (T) p.Value);
 
