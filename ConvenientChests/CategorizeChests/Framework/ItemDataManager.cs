@@ -124,8 +124,7 @@ namespace ConvenientChests.CategorizeChests.Framework {
             foreach (int id in Game1.content.Load<Dictionary<int, string>>("Data\\hats").Keys)
                 yield return new Hat(id);
 
-            foreach (int id in Game1.objectInformation.Keys)
-                if (id >= Ring.ringLowerIndexRange && id <= Ring.ringUpperIndexRange)
+            for (int id = Ring.ringLowerIndexRange; id <= Ring.ringUpperIndexRange; id++)
                     yield return new Ring(id);
 
             // weapons
@@ -136,7 +135,7 @@ namespace ConvenientChests.CategorizeChests.Framework {
             foreach (int id in Game1.objectInformation.Keys) {
                 if (id >= Ring.ringLowerIndexRange && id <= Ring.ringUpperIndexRange)
                     continue; // handled separated
-
+               
                 yield return new StardewObject(id, 1);
             }
         }

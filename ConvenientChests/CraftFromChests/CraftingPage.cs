@@ -128,7 +128,7 @@ namespace ConvenientChests.CraftFromChests {
             // item triggers
             Game1.player.checkForQuestComplete(null, -1, -1, newItem, null, 2);
             if (Cooking) {
-                Game1.player.cookedRecipe(HeldItem.ParentSheetIndex);
+                Game1.player.cookedRecipe(HeldItem.parentSheetIndex);
                 Game1.stats.checkForCookingAchievements();
             }
             else {
@@ -214,24 +214,19 @@ namespace ConvenientChests.CraftFromChests {
 
             // ugly tooltip workaround <_<
             var fridge = ChestExtension.GetFridge(Game1.player);
-            if (fridge.items.Dirty)
-                return;
-
-            var items   = fridge.items.ToList();
+            var items   = fridge.items;
             var cooking = HoveredRecipe.isCookingRecipe;
 
             // set
             HoveredRecipe.isCookingRecipe = true;
-            fridge.items.Set(Inventory);
-            fridge.items.MarkClean();
+            fridge.items = Inventory;
 
             // draw
             drawHoverText(b, " ", Game1.smallFont, offset, offset, -1, HoveredRecipe.DisplayName, -1, buffs, HoveredItem, 0, -1, -1, -1, -1, 1, HoveredRecipe);
 
             // revert
             HoveredRecipe.isCookingRecipe = cooking;
-            fridge.items.Set(items);
-            fridge.items.MarkClean();
+            fridge.items = items;
         }
 
         protected virtual void DrawHoverTooltip(SpriteBatch b) {

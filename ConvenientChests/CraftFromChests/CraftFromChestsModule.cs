@@ -52,7 +52,7 @@ namespace ConvenientChests.CraftFromChests {
             if (house == null || house.upgradeLevel == 0)
                 yield break;
 
-            var fridge = house.fridge.Value;
+            var fridge = house.fridge;
             if (!chests.Contains(fridge))
                 yield return fridge.items;
         }

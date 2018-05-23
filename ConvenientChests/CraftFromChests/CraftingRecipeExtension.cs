@@ -58,8 +58,8 @@ namespace ConvenientChests.CraftFromChests {
         private static bool MatchesItemKey(Item item, int itemKey) =>
             item != null          &&
             item is Object o      &&
-            !o.bigCraftable.Value &&
-            (o.ParentSheetIndex == itemKey || o.Category == itemKey);
+            !o.bigCraftable &&
+            (o.parentSheetIndex == itemKey || o.Category == itemKey);
 
 
         public static Dictionary<int, int> GetIngredients(this CraftingRecipe recipe)
@@ -119,7 +119,7 @@ namespace ConvenientChests.CraftFromChests {
 
 
         public static string[] GetBuffsForCookingRecipe(this CraftingRecipe recipe) {
-            var objInfo = Game1.objectInformation[recipe.createItem().ParentSheetIndex];
+            var objInfo = Game1.objectInformation[recipe.createItem().parentSheetIndex];
             return objInfo.Split('/').Length < 8
                        ? null
                        : objInfo.Split('/')[7].Split(' ');
