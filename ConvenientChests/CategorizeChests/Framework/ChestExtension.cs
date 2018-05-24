@@ -12,10 +12,11 @@ namespace ConvenientChests.CategorizeChests.Framework {
                 return StardewValley.Utility.getHomeOfFarmer(player).fridge.Value;
 
             if (!(Game1.currentLocation is FarmHouse f))
-                throw new Exception("Cooking from the outside?");
-
+                // Can't access other locations
+                return null;
+            
             if (f.owner != player)
-                ModEntry.Log($"Could not get fridge for player '{player.Name}' coz in wrong house.");
+                ModEntry.Log($"Could not get fridge for player '{player.Name}' (wrong house)");
 
             return f.fridge.Value;
         }
