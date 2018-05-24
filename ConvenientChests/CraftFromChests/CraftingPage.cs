@@ -57,7 +57,6 @@ namespace ConvenientChests.CraftFromChests {
 
         public Dictionary<ClickableTextureComponent, CraftingRecipe> CurrentPage => CraftingPages[CurrentPageIndex];
 
-
         public CraftingPage(int x, int y, int width, int height, bool cooking, List<IList<Item>> inventories) : base(x, y, width, height, cooking) {
             Cooking     = cooking;
             Inventories = inventories;
@@ -212,26 +211,9 @@ namespace ConvenientChests.CraftFromChests {
             var offset = HeldItem != null ? 48 : 0;
             var buffs  = Cooking ? HoveredRecipe.GetBuffsForCookingRecipe() : null;
 
-            // ugly tooltip workaround <_<
-            var fridge = ChestExtension.GetFridge(Game1.player);
-            if (fridge.items.Dirty)
-                return;
-
-            var items   = fridge.items.ToList();
-            var cooking = HoveredRecipe.isCookingRecipe;
-
-            // set
-            HoveredRecipe.isCookingRecipe = true;
-            fridge.items.Set(Inventory);
-            fridge.items.MarkClean();
-
-            // draw
+            RecipeTooltextReplacer.ActiveInventory = Inventory;
             drawHoverText(b, " ", Game1.smallFont, offset, offset, -1, HoveredRecipe.DisplayName, -1, buffs, HoveredItem, 0, -1, -1, -1, -1, 1, HoveredRecipe);
-
-            // revert
-            HoveredRecipe.isCookingRecipe = cooking;
-            fridge.items.Set(items);
-            fridge.items.MarkClean();
+            RecipeTooltextReplacer.ActiveInventory = null;
         }
 
         protected virtual void DrawHoverTooltip(SpriteBatch b) {
