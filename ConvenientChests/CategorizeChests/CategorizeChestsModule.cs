@@ -32,14 +32,21 @@ namespace ConvenientChests.CategorizeChests {
         }
 
         public override void Activate() {
-            IsActive    = true;
-            SaveManager = new SaveManager(ModEntry.ModManifest.Version, this);
+            IsActive = true;
 
-            // Events
+            // Menu Events
             MenuEvents.MenuChanged += OnMenuChanged;
             MenuEvents.MenuClosed  += OnMenuClosed;
-            SaveEvents.BeforeSave  += OnGameSaving;
-            SaveEvents.AfterLoad   += OnGameLoaded;
+
+            if (Context.IsMultiplayer && !Context.IsMainPlayer) {
+                ModEntry.Log("Due to limitations in the network code, CHEST CATEGORIES CAN NOT BE SAVED as farmhand, sorry :(", LogLevel.Warn);
+                return;
+            }
+
+            // Save Events
+            SaveManager           =  new SaveManager(ModEntry.ModManifest.Version, this);
+            SaveEvents.BeforeSave += OnGameSaving;
+            SaveEvents.AfterLoad  += OnGameLoaded;
         }
 
         private void OnGameSaving(object sender, EventArgs e) {
@@ -64,11 +71,11 @@ namespace ConvenientChests.CategorizeChests {
         }
 
         private void OnMenuChanged(object sender, EventArgsClickableMenuChanged e) {
+            if (e.NewMenu == e.PriorMenu)
+                return;
+
             if (e.PriorMenu is ItemGrabMenu)
-                if (e.NewMenu is ItemGrabMenu)
-                    return;
-                else
-                    ClearMenu();
+                ClearMenu();
 
             if (e.NewMenu is ItemGrabMenu itemGrabMenu)
                 CreateMenu(itemGrabMenu);
