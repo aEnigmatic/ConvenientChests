@@ -2,6 +2,7 @@
 using ConvenientChests.CraftFromChests;
 using ConvenientChests.StackToNearbyChests;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 
 namespace ConvenientChests {
     public class ModEntry : Mod {
@@ -21,7 +22,8 @@ namespace ConvenientChests {
             StaticMonitor = Monitor;
             StaticHelper  = Helper;
 
-            LoadModules();
+            SaveEvents.AfterLoad          += (sender, e) => LoadModules();
+            SaveEvents.AfterReturnToTitle += (sender, e) => UnloadModules();
         }
 
         private void LoadModules() {
@@ -36,6 +38,12 @@ namespace ConvenientChests {
             CraftFromChests = new CraftFromChestsModule(this);
             if (Config.CraftFromChests)
                 CraftFromChests.Activate();
+        }
+
+        private void UnloadModules() {
+            StashNearby      = null;
+            CategorizeChests = null;
+            CraftFromChests  = null;
         }
     }
 }
