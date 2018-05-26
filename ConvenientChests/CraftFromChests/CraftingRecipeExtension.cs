@@ -61,7 +61,7 @@ namespace ConvenientChests.CraftFromChests {
         private static bool MatchesItemKey(Item item, int itemKey) =>
             item != null          &&
             item is Object o      &&
-            !o.bigCraftable &&
-            (o.parentSheetIndex == itemKey || o.Category == itemKey);
+            !o.bigCraftable.Value &&
+            (o.ParentSheetIndex == itemKey || o.Category == itemKey);
     }
 }
