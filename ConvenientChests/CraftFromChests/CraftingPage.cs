@@ -106,7 +106,7 @@ namespace ConvenientChests.CraftFromChests {
                 HeldItem = newItem;
 
             // or item can be added to hand
-            else if (HeldItem.canStackWith(newItem) && HeldItem.getRemainingStackSpace() <= recipe.numberProducedPerCraft)
+            else if (HeldItem.canStackWith(newItem) && HeldItem.getRemainingStackSpace() >= recipe.numberProducedPerCraft)
                 HeldItem.Stack += recipe.numberProducedPerCraft;
 
             // or stashed to inventory
@@ -136,6 +136,7 @@ namespace ConvenientChests.CraftFromChests {
             }
 
             // Handle gamepad
+            // Move HeldItem to inventory, if possible
             if (!Game1.options.gamepadControls || !Game1.player.couldInventoryAcceptThisItem(HeldItem))
                 return;
 
