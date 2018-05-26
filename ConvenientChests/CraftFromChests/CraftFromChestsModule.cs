@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ConvenientChests.StackToNearbyChests;
 using Harmony;
@@ -10,39 +9,29 @@ using StardewValley.Menus;
 namespace ConvenientChests.CraftFromChests {
     public class CraftFromChestsModule : Module {
         public HarmonyInstance Harmony { get; set; }
-        
+
+        public static List<Item> NearbyItems { get; private set; }
+
+        private static IList<IList<Item>> _nearbyInventories;
+
+        public static IList<IList<Item>> NearbyInventories {
+            get => _nearbyInventories;
+            set {
+                _nearbyInventories = value;
+                NearbyItems        = value?.SelectMany(l => l.Where(i => i != null)).ToList();
+            }
+        }
+
         public CraftFromChestsModule(ModEntry modEntry) : base(modEntry) { }
 
         public override void Activate() {
             MenuListener.RegisterEvents();
-            MenuListener.CraftingMenuShown += (sender, e) => ReplaceCraftingScreen();
-            
+            MenuListener.CraftingMenuShown  += (sender, e) => NearbyInventories = GetInventories(Game1.activeClickableMenu is CraftingPage).ToList();
+            MenuListener.CraftingMenuClosed += (sender, e) => NearbyInventories = null;
+
             Harmony = HarmonyInstance.Create("aEnigma.convenientchests");
-            RecipeTooltextReplacer.Register(Harmony);
-        }
-
-
-        private void ReplaceCraftingScreen() {
-            switch (Game1.activeClickableMenu) {
-                case GameMenu gameMenu:
-                    var tabs    = gameMenu.GetTabs(ModEntry.Helper.Reflection);
-                    var oldPage = (StardewValley.Menus.CraftingPage) tabs[GameMenu.craftingTab];
-                    var newPage = new CraftingPage(oldPage, false, GetInventories(false).ToList());
-                    tabs[GameMenu.craftingTab] = newPage;
-                    gameMenu.changeTab(GameMenu.craftingTab);
-                    break;
-
-                case StardewValley.Menus.CraftingPage p:
-                    if (p is CraftingPage)
-                        return;
-
-                    Game1.activeClickableMenu = new CraftingPage(p, true, GetInventories(true).ToList());
-                    break;
-
-                default:
-                    // How did we get here?
-                    throw new Exception($"Unexpected menu: {Game1.activeClickableMenu?.GetType().ToString() ?? "null"}");
-            }
+            CraftingRecipePatch.Register(Harmony);
+            FarmerPatch.Register(Harmony);
         }
 
         private IEnumerable<IList<Item>> GetInventories(bool isCookingScreen) {

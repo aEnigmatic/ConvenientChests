@@ -17,7 +17,7 @@ namespace ConvenientChests.CategorizeChests {
         internal ChestFinder       ChestFinder      { get; } = new ChestFinder();
 
         protected string      SaveDirectory => Path.Combine(ModEntry.Helper.DirectoryPath, "savedata");
-        protected string      SavePath      => Path.Combine(ModEntry.Helper.DirectoryPath, "savedata", Constants.SaveFolderName + ".json");
+        protected string      SavePath      => Path.Combine(ModEntry.Helper.DirectoryPath, "savedata", $"{Constants.SaveFolderName}.json");
         private   SaveManager SaveManager   { get; set; }
 
 
