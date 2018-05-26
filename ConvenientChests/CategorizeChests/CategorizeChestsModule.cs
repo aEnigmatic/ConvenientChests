@@ -38,6 +38,11 @@ namespace ConvenientChests.CategorizeChests {
             MenuEvents.MenuChanged += OnMenuChanged;
             MenuEvents.MenuClosed  += OnMenuClosed;
 
+            if (Context.IsMultiplayer && !Context.IsMainPlayer) {
+                ModEntry.Log("Due to limitations in the network code, CHEST CATEGORIES CAN NOT BE SAVED as farmhand, sorry :(", LogLevel.Warn);
+                return;
+            }
+
             // Save Events
             SaveManager           =  new SaveManager(ModEntry.ModManifest.Version, this);
             SaveEvents.BeforeSave += OnGameSaving;

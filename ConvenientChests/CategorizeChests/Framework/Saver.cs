@@ -50,8 +50,8 @@ namespace ConvenientChests.CategorizeChests.Framework
                 {
                     // buildings
                     case BuildableGameLocation buildableLocation:
-                        foreach (var building in buildableLocation.buildings.Where(b => b.indoors != null))
-                        foreach (var pair in GetLocationChests(building.indoors))
+                        foreach (var building in buildableLocation.buildings.Where(b => b.indoors.Value != null))
+                        foreach (var pair in GetLocationChests(building.indoors.Value))
                             yield return new ChestEntry(
                                 ChestDataManager.GetChestData(pair.Value),
                                 new ChestAddress(location.Name, pair.Key, ChestLocationType.Building, building.nameOfIndoors)
@@ -61,9 +61,9 @@ namespace ConvenientChests.CategorizeChests.Framework
                     // fridges
                     case FarmHouse farmHouse when farmHouse.upgradeLevel >= 1:
                         yield return new ChestEntry(
-                            ChestDataManager.GetChestData(farmHouse.fridge),
-                            new ChestAddress {LocationName = farmHouse.Name, LocationType = ChestLocationType.Refrigerator}
-                        );
+                            ChestDataManager.GetChestData(farmHouse.fridge.Value),
+                            new ChestAddress {LocationName = farmHouse.uniqueName?.Value ?? farmHouse.Name, LocationType = ChestLocationType.Refrigerator}
+                           );
                         break;
                 }
             }
@@ -74,8 +74,8 @@ namespace ConvenientChests.CategorizeChests.Framework
         /// location, keyed by their tile location.
         /// </summary>
         private static IDictionary<Vector2, Chest> GetLocationChests(GameLocation location) =>
-            location.Objects
-                .Where(pair => pair.Value is Chest c && c.playerChest)
+            location.Objects.Pairs
+                .Where(pair => pair.Value is Chest c && c.playerChest.Value)
                 .ToDictionary(
                     pair => pair.Key,
                     pair => (Chest) pair.Value

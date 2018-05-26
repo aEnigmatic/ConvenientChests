@@ -43,7 +43,7 @@ namespace ConvenientChests.CategorizeChests {
                     return ItemType.Ring;
 
                 case Wallpaper w:
-                    return w.isFloor
+                    return w.isFloor.Value
                                ? ItemType.Flooring
                                : ItemType.Wallpaper;
 
@@ -55,12 +55,12 @@ namespace ConvenientChests.CategorizeChests {
                     return ItemType.Tool;
 
                 case Fence f:
-                    return f.isGate
+                    return f.isGate.Value
                                ? ItemType.Gate
                                : ItemType.Object;
 
                 case Object _:
-                    switch (item.category) {
+                    switch (item.Category) {
                         case Object.FishCategory:
                             return ItemType.Fish;
 
@@ -78,25 +78,25 @@ namespace ConvenientChests.CategorizeChests {
         public static int GetItemID(Item item) {
             switch (item) {
                 case Boots a:
-                    return a.indexInTileSheet;
+                    return a.indexInTileSheet.Value;
 
                 case Ring a:
-                    return a.indexInTileSheet;
+                    return a.indexInTileSheet.Value;
 
                 case Hat a:
-                    return a.which;
+                    return a.which.Value;
 
                 case Tool a:
-                    return a.initialParentTileIndex;
+                    return a.InitialParentTileIndex;
 
                 case Fence a:
-                    if (a.isGate)
+                    if (a.isGate.Value)
                         return 0;
 
-                    return a.whichType;
+                    return a.whichType.Value;
 
                 default:
-                    return item.parentSheetIndex;
+                    return item.ParentSheetIndex;
             }
         }
     }
