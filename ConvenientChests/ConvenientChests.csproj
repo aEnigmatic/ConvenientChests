@@ -114,11 +114,10 @@
     <Compile Include="CategorizeChests\Utility.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="CraftFromChests\CraftFromChestsModule.cs" />
-    <Compile Include="CraftFromChests\CraftingPage.cs" />
     <Compile Include="CraftFromChests\CraftingRecipeExtension.cs" />
     <Compile Include="CraftFromChests\FarmerPatch.cs" />
     <Compile Include="CraftFromChests\MenuListener.cs" />
-    <Compile Include="CraftFromChests\RecipeTooltextReplacer.cs" />
+    <Compile Include="CraftFromChests\CraftingRecipePatch.cs" />
     <Compile Include="ModEntry.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="StackToNearbyChests\StackLogic.cs" />
