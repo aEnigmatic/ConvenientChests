@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ConvenientChests.CategorizeChests.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -57,7 +56,6 @@ namespace ConvenientChests.CraftFromChests {
 
         public Dictionary<ClickableTextureComponent, CraftingRecipe> CurrentPage => CraftingPages[CurrentPageIndex];
 
-
         public CraftingPage(int x, int y, int width, int height, bool cooking, List<IList<Item>> inventories) : base(x, y, width, height, cooking) {
             Cooking     = cooking;
             Inventories = inventories;
@@ -107,7 +105,7 @@ namespace ConvenientChests.CraftFromChests {
                 HeldItem = newItem;
 
             // or item can be added to hand
-            else if (HeldItem.canStackWith(newItem) && HeldItem.getRemainingStackSpace() <= recipe.numberProducedPerCraft)
+            else if (HeldItem.canStackWith(newItem) && HeldItem.getRemainingStackSpace() >= recipe.numberProducedPerCraft)
                 HeldItem.Stack += recipe.numberProducedPerCraft;
 
             // or stashed to inventory
@@ -137,6 +135,7 @@ namespace ConvenientChests.CraftFromChests {
             }
 
             // Handle gamepad
+            // Move HeldItem to inventory, if possible
             if (!Game1.options.gamepadControls || !Game1.player.couldInventoryAcceptThisItem(HeldItem))
                 return;
 
@@ -212,21 +211,9 @@ namespace ConvenientChests.CraftFromChests {
             var offset = HeldItem != null ? 48 : 0;
             var buffs  = Cooking ? HoveredRecipe.GetBuffsForCookingRecipe() : null;
 
-            // ugly tooltip workaround <_<
-            var fridge = ChestExtension.GetFridge(Game1.player);
-            var items   = fridge.items;
-            var cooking = HoveredRecipe.isCookingRecipe;
-
-            // set
-            HoveredRecipe.isCookingRecipe = true;
-            fridge.items = Inventory;
-
-            // draw
+            RecipeTooltextReplacer.ActiveInventory = Inventory;
             drawHoverText(b, " ", Game1.smallFont, offset, offset, -1, HoveredRecipe.DisplayName, -1, buffs, HoveredItem, 0, -1, -1, -1, -1, 1, HoveredRecipe);
-
-            // revert
-            HoveredRecipe.isCookingRecipe = cooking;
-            fridge.items = items;
+            RecipeTooltextReplacer.ActiveInventory = null;
         }
 
         protected virtual void DrawHoverTooltip(SpriteBatch b) {
