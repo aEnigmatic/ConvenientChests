@@ -2,18 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using ConvenientChests.StackToNearbyChests;
+using Harmony;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
 
 namespace ConvenientChests.CraftFromChests {
     public class CraftFromChestsModule : Module {
+        public HarmonyInstance Harmony { get; set; }
+        
         public CraftFromChestsModule(ModEntry modEntry) : base(modEntry) { }
 
         public override void Activate() {
             MenuListener.RegisterEvents();
             MenuListener.CraftingMenuShown += (sender, e) => ReplaceCraftingScreen();
+            
+            Harmony = HarmonyInstance.Create("aEnigma.convenientchests");
+            RecipeTooltextReplacer.Register(Harmony);
         }
+
 
         private void ReplaceCraftingScreen() {
             switch (Game1.activeClickableMenu) {
