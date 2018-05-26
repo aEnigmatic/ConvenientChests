@@ -9,7 +9,7 @@ namespace ConvenientChests.CraftFromChests {
     public static class CraftingRecipeExtension {
         public static Dictionary<int, int> GetIngredients(this CraftingRecipe recipe)
             => ModEntry.StaticHelper.Reflection.GetField<Dictionary<int, int>>(recipe, "recipeList").GetValue();
-        
+
         public static bool ConsumeIngredients(this CraftingRecipe recipe, IList<IList<Item>> extraInventories) {
             foreach (var i in recipe.GetIngredients()) {
                 var itemKey = i.Key;
@@ -46,8 +46,10 @@ namespace ConvenientChests.CraftFromChests {
                 if (item.Stack > count)
                     item.Stack -= count;
 
-                else
+                else {
+                    item.Stack   = 0;
                     items[index] = null;
+                }
 
                 count -= actualValue;
 
