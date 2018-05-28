@@ -49,6 +49,18 @@ namespace ConvenientChests.CategorizeChests {
             SaveEvents.AfterLoad  += OnGameLoaded;
         }
 
+        public override void Deactivate() {
+            IsActive = false;
+
+            // Menu Events
+            MenuEvents.MenuChanged -= OnMenuChanged;
+            MenuEvents.MenuClosed  -= OnMenuClosed;
+
+            // Save Events
+            SaveEvents.BeforeSave -= OnGameSaving;
+            SaveEvents.AfterLoad  -= OnGameLoaded;
+        }
+
         private void OnGameSaving(object sender, EventArgs e) {
             try {
                 SaveManager.Save(SavePath);
