@@ -9,10 +9,10 @@ namespace ConvenientChests.CraftFromChests {
     public static class MenuListener {
         public static List<IClickableMenu> GetTabs(this GameMenu m, IReflectionHelper h) => h.GetField<List<IClickableMenu>>(m, "pages").GetValue();
 
-        public static EventHandler GameMenuShown;
-        public static EventHandler GameMenuClosed;
-        public static EventHandler CraftingMenuShown;
-        public static EventHandler CraftingMenuClosed;
+        public static event EventHandler GameMenuShown;
+        public static event EventHandler GameMenuClosed;
+        public static event EventHandler CraftingMenuShown;
+        public static event EventHandler CraftingMenuClosed;
 
         public static void RegisterEvents() {
             ModEntry.Log("Register");

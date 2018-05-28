@@ -15,6 +15,14 @@ namespace ConvenientChests.StackToNearbyChests {
             ControlEvents.KeyPressed              += OnKeyPressed;
         }
 
+        public override void Deactivate() {
+            IsActive = false;
+
+            // Events
+            ControlEvents.ControllerButtonPressed -= OnControllerButtonPressed;
+            ControlEvents.KeyPressed              -= OnKeyPressed;
+        }
+
         private void TryStashNearby() {
             if (Game1.player.currentLocation == null)
                 return;
