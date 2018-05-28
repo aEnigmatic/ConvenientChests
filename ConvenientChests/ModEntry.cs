@@ -41,9 +41,14 @@ namespace ConvenientChests {
         }
 
         private void UnloadModules() {
-            StashNearby      = null;
+            StashNearby.Deactivate();
+            StashNearby = null;
+            
+            CategorizeChests.Deactivate();
             CategorizeChests = null;
-            CraftFromChests  = null;
+            
+            CraftFromChests.Deactivate();
+            CraftFromChests = null;
         }
     }
 }

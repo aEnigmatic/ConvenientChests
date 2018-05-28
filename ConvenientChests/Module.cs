@@ -10,5 +10,6 @@ namespace ConvenientChests {
         public Module(ModEntry modEntry) => ModEntry = modEntry;
 
         public abstract void Activate();
+        public abstract void Deactivate();
     }
 }

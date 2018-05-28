@@ -46,7 +46,19 @@ namespace ConvenientChests.CategorizeChests {
             // Save Events
             SaveManager           =  new SaveManager(ModEntry.ModManifest.Version, this);
             SaveEvents.BeforeSave += OnGameSaving;
-            SaveEvents.AfterLoad  += OnGameLoaded;
+            OnGameLoaded(this, EventArgs.Empty);
+        }
+
+        public override void Deactivate() {
+            IsActive = false;
+
+            // Menu Events
+            MenuEvents.MenuChanged -= OnMenuChanged;
+            MenuEvents.MenuClosed  -= OnMenuClosed;
+
+            // Save Events
+            SaveEvents.BeforeSave -= OnGameSaving;
+            SaveEvents.AfterLoad  -= OnGameLoaded;
         }
 
         private void OnGameSaving(object sender, EventArgs e) {
