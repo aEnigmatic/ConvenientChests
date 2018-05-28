@@ -30,7 +30,7 @@ namespace ConvenientChests.CraftFromChests {
 
         public override void Activate() {
             IsActive = true;
-            
+
             // Register Events
             MenuListener.RegisterEvents();
             MenuListener.CraftingMenuShown  += CraftingMenuShown;
@@ -44,7 +44,7 @@ namespace ConvenientChests.CraftFromChests {
 
         public override void Deactivate() {
             IsActive = false;
-            
+
             // Unregister Events
             MenuListener.CraftingMenuShown  -= CraftingMenuShown;
             MenuListener.CraftingMenuClosed -= CraftingMenuClosed;
@@ -56,31 +56,36 @@ namespace ConvenientChests.CraftFromChests {
         }
 
         private void CraftingMenuShown(object sender, EventArgs e) {
-            NearbyInventories = GetInventories(Game1.activeClickableMenu is CraftingPage).ToList();
+            NearbyChests      = GetChests(Game1.activeClickableMenu is CraftingPage).ToList();
+            NearbyInventories = NearbyChests.Select(c => (IList<Item>) c.items.ToList()).ToList();
         }
 
-        private void CraftingMenuClosed(object sender, EventArgs e) {
+        private static void CraftingMenuClosed(object sender, EventArgs e) {
+            foreach (var c in NearbyChests)
+            foreach (var i in c.items.Where(i => i.Stack == 0 && i.Category != StardewValley.Object.BigCraftableCategory))
+                c.items.Remove(i);
+
+            NearbyChests      = null;
             NearbyInventories = null;
         }
 
-
-        private IEnumerable<IList<Item>> GetInventories(bool isCookingScreen) {
+        private IEnumerable<Chest> GetChests(bool isCookingScreen) {
             // nearby chests
             var chests = Game1.player.GetNearbyChests(Config.CraftRadius).Where(c => c.items.Any(i => i != null)).ToList();
             foreach (var c in chests)
-                yield return c.items;
+                yield return c;
 
             // always add fridge when on cooking screen
             if (!isCookingScreen)
                 yield break;
 
-            var house = Game1.player.currentLocation as FarmHouse ?? Utility.getHomeOfFarmer(Game1.player) ?? null;
+            var house = Game1.player.currentLocation as FarmHouse ?? Utility.getHomeOfFarmer(Game1.player);
             if (house == null || house.upgradeLevel == 0)
                 yield break;
 
             var fridge = house.fridge.Value;
             if (!chests.Contains(fridge))
-                yield return fridge.items;
+                yield return fridge;
         }
     }
 }
