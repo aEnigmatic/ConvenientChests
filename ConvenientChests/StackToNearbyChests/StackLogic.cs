@@ -25,27 +25,26 @@ namespace ConvenientChests.StackToNearbyChests {
             var inventory = Game1.player.Items.Where(i => i != null).ToList();
             var toBeMoved = inventory.Where(i => AcceptingFunction(chest, i)).ToList();
 
-            if (toBeMoved.Any() && chest.DumpItemsToChest(toBeMoved).Any())
+            if (toBeMoved.Any() && chest.DumpItemsToChest(Game1.player.Items, toBeMoved).Any())
                 Game1.playSound(Game1.soundBank.GetCue("pickUpItem").Name);
         }
 
         public static void StashToNearbyChests(int radius) {
             ModEntry.Log("Stash to nearby chests");
 
-            var farmer = Game1.player;
-            var items = farmer.Items
-                              .Where(i => i != null)
-                              .ToList();
-
             var movedAtLeastOne = false;
 
-            foreach (var chest in farmer.GetNearbyChests(radius)) {
-                var moveItems = items.Where(i => AcceptingFunction(chest, i)).ToList();
+            foreach (var chest in Game1.player.GetNearbyChests(radius)) {
+                var moveItems = Game1.player.Items
+                                     .Where(i => i != null)
+                                     .Where(i => AcceptingFunction(chest, i))
+                                     .ToList();
 
                 if (!moveItems.Any())
                     continue;
 
-                if (chest.DumpItemsToChest(moveItems).Any())
+                var movedItems = chest.DumpItemsToChest(Game1.player.Items, moveItems);
+                if (movedItems.Any())
                     movedAtLeastOne = true;
             }
 
