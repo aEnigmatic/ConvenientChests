@@ -41,7 +41,7 @@ namespace ConvenientChests.CategorizeChests.Framework {
         /// <param name="sourceInventory"></param>
         /// <param name="items">Items to put in</param>
         /// <returns>List of Items that were successfully moved into the chest</returns>
-        public static IEnumerable<Item> DumpItemsToChest(this Chest chest, ICollection<Item> sourceInventory, IEnumerable<Item> items) {
+        public static IEnumerable<Item> DumpItemsToChest(this Chest chest, IList<Item> sourceInventory, IEnumerable<Item> items) {
             var changedItems = items.Where(item => item != null)
                                     .Where(item => TryMoveItemToChest(chest, sourceInventory, item))
                                     .ToList();
@@ -56,12 +56,13 @@ namespace ConvenientChests.CategorizeChests.Framework {
         /// <param name="sourceInventory"></param>
         /// <param name="item">The items to put in the chest.</param>
         /// <returns>True if at least some of the stack was moved into the chest.</returns>
-        public static bool TryMoveItemToChest(this Chest chest, ICollection<Item> sourceInventory, Item item) {
+        public static bool TryMoveItemToChest(this Chest chest, IList<Item> sourceInventory, Item item) {
             var remainder = chest.addItem(item);
 
             // nothing remains -> remove item
             if (remainder == null) {
-                sourceInventory.Remove(item);
+                var index = sourceInventory.IndexOf(item);
+                sourceInventory[index] = null;
                 return true;
             }
 
