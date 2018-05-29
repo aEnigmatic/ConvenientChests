@@ -48,7 +48,7 @@ namespace ConvenientChests.CraftFromChests {
 
                 else {
                     item.Stack   = 0;
-                    items[index] = null;
+                    items.RemoveAt(index);
                 }
 
                 count -= actualValue;

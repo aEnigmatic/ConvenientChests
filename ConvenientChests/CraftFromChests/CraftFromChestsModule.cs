@@ -57,7 +57,7 @@ namespace ConvenientChests.CraftFromChests {
 
         private void CraftingMenuShown(object sender, EventArgs e) {
             NearbyChests      = GetChests(Game1.activeClickableMenu is CraftingPage).ToList();
-            NearbyInventories = NearbyChests.Select(c => (IList<Item>) c.items.ToList()).ToList();
+            NearbyInventories = NearbyChests.Select(c => (IList<Item>) c.items).ToList();
         }
 
         private static void CraftingMenuClosed(object sender, EventArgs e) {
