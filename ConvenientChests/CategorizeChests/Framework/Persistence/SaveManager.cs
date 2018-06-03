@@ -30,12 +30,17 @@ namespace ConvenientChests.CategorizeChests.Framework.Persistence {
             var model = Module.ModEntry.Helper.ReadJsonFile<SaveData>(path) ?? new SaveData();
 
             foreach (var entry in model.ChestEntries) {
-                var chest     = Module.ChestFinder.GetChestByAddress(entry.Address);
-                var chestData = Module.ChestDataManager.GetChestData(chest);
+                try {
+                    var chest     = Module.ChestFinder.GetChestByAddress(entry.Address);
+                    var chestData = Module.ChestDataManager.GetChestData(chest);
 
-                chestData.AcceptedItemKinds = entry.GetItemSet();
-                foreach (var key in chestData.AcceptedItemKinds.Where(k => !Module.ItemDataManager.Prototypes.ContainsKey(k)))
-                    Module.ItemDataManager.Prototypes.Add(key, key.GetOne());
+                    chestData.AcceptedItemKinds = entry.GetItemSet();
+                    foreach (var key in chestData.AcceptedItemKinds.Where(k => !Module.ItemDataManager.Prototypes.ContainsKey(k)))
+                        Module.ItemDataManager.Prototypes.Add(key, key.GetOne());
+                }
+                catch (InvalidSaveDataException e) {
+                    Module.Monitor.Log(e.Message, LogLevel.Warn);
+                }
             }
         }
     }
