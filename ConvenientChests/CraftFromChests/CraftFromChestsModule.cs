@@ -7,7 +7,7 @@ using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Objects;
-using Object = System.Object;
+using Object = StardewValley.Object;
 
 namespace ConvenientChests.CraftFromChests {
     public class CraftFromChestsModule : Module {
@@ -62,9 +62,9 @@ namespace ConvenientChests.CraftFromChests {
 
         private static void CraftingMenuClosed(object sender, EventArgs e) {
             foreach (var c in NearbyChests)
-            foreach (var i in c.items.Where(i => i.Stack == 0 && i.Category != StardewValley.Object.BigCraftableCategory))
-                c.items.Remove(i);
-
+            foreach (var i in c.items.Where(i => i?.Stack == 0 && i.Category != Object.BigCraftableCategory))
+                c.items[c.items.IndexOf(i)] = null;
+            
             NearbyChests      = null;
             NearbyInventories = null;
         }
