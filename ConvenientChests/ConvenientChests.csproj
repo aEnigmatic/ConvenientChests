@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\PyTK\0Harmony.dll</HintPath>
+      <HintPath>..\libraries\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
