@@ -4,7 +4,7 @@
   "Version": "1.0.0",
   "Description": "Makes your life easier: Allows crafting from and auto-stashing to nearby chests.",
   "UniqueID": "aEnigma.ConvenientChests",
-  "MinimumApiVersion": "2.6-beta",
+  "MinimumApiVersion": "2.6-beta.20.1",
   "EntryDll": "ConvenientChests.dll",
   "UpdateKeys": ["Nexus:2196"]
 }
