@@ -1,8 +1,12 @@
-﻿using ConvenientChests.CategorizeChests;
+﻿using System.Linq;
+using ConvenientChests.CategorizeChests;
 using ConvenientChests.CraftFromChests;
 using ConvenientChests.StackToNearbyChests;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewValley;
+using StardewValley.Locations;
+using StardewValley.TerrainFeatures;
 
 namespace ConvenientChests {
     public class ModEntry : Mod {
@@ -18,7 +22,6 @@ namespace ConvenientChests {
 
         public override void Entry(IModHelper helper) {
             Config = helper.ReadConfig<Config>();
-
             StaticMonitor = Monitor;
             StaticHelper  = Helper;
 
