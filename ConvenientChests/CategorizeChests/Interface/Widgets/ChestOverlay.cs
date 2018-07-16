@@ -102,7 +102,7 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
             SetItemsClickable(true);
         }
 
-        private void StashItems() => StackLogic.StashToChest(Chest);
+        private void StashItems() => StackLogic.StashToChest(Chest, ModEntry.StashNearby.AcceptingFunction);
 
         public override bool ReceiveLeftClick(Point point) {
             var hit = PropagateLeftClick(point);

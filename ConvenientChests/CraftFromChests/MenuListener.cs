@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -36,7 +36,7 @@ namespace ConvenientChests.CraftFromChests {
                     UnregisterTabEvent();
                     break;
 
-                case StardewValley.Menus.CraftingPage _:
+                case CraftingPage _:
                     if (e.NewMenu is CraftingPage)
                         break;
 
@@ -50,7 +50,7 @@ namespace ConvenientChests.CraftFromChests {
                     GraphicsEvents.OnPostRenderGuiEvent += OnPostRenderGuiEvent;
                     break;
 
-                case StardewValley.Menus.CraftingPage _:
+                case CraftingPage _:
                     CraftingMenuShown?.Invoke(sender, e);
                     break;
             }
@@ -63,7 +63,7 @@ namespace ConvenientChests.CraftFromChests {
                     UnregisterTabEvent();
                     break;
 
-                case StardewValley.Menus.CraftingPage _:
+                case CraftingPage _:
                     CraftingMenuClosed?.Invoke(sender, e);
                     break;
             }

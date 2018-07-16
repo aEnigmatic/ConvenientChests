@@ -11,25 +11,22 @@ using Object = StardewValley.Object;
 
 namespace ConvenientChests.StackToNearbyChests {
     public static class StackLogic {
-        internal static Func<Chest, Item, bool> AcceptingFunction
-            => ModEntry.CategorizeChests.IsActive
-                   ? (chest, i) => ModEntry.CategorizeChests.ChestAcceptsItem(chest, i) || chest.ContainsItem(i)
-                   : (Func<Chest, Item, bool>) ((chest, i) => chest.ContainsItem(i));
-
+        public delegate bool AcceptingFunction(Chest c, Item i);
+        
         public static IEnumerable<Chest> GetNearbyChests(this Farmer farmer, int radius)
             => GetNearbyChests(farmer.currentLocation, farmer.getTileLocation(), radius);
 
-        public static void StashToChest(Chest chest) {
+        public static void StashToChest(Chest chest, AcceptingFunction f) {
             ModEntry.Log("Stash to current chest");
 
             var inventory = Game1.player.Items.Where(i => i != null).ToList();
-            var toBeMoved = inventory.Where(i => AcceptingFunction(chest, i)).ToList();
+            var toBeMoved = inventory.Where(i => f(chest, i)).ToList();
 
             if (toBeMoved.Any() && chest.DumpItemsToChest(Game1.player.Items, toBeMoved).Any())
                 Game1.playSound(Game1.soundBank.GetCue("pickUpItem").Name);
         }
 
-        public static void StashToNearbyChests(int radius) {
+        public static void StashToNearbyChests(int radius, AcceptingFunction f) {
             ModEntry.Log("Stash to nearby chests");
 
             var movedAtLeastOne = false;
@@ -37,7 +34,7 @@ namespace ConvenientChests.StackToNearbyChests {
             foreach (var chest in Game1.player.GetNearbyChests(radius)) {
                 var moveItems = Game1.player.Items
                                      .Where(i => i != null)
-                                     .Where(i => AcceptingFunction(chest, i))
+                                     .Where(i => f(chest, i))
                                      .ToList();
 
                 if (!moveItems.Any())
