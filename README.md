@@ -5,6 +5,9 @@ Combines features of [StackToNearbyChests](https://www.nexusmods.com/stardewvall
 Stardew Valley 1.4  
 [SMAPI 3.0](https://smapi.io)
 
+## Known issues
+`Craft from Chest` feature isn't working
+
 ## Thanks to...
 * [Pathoschild](https://github.com/Pathoschild) for [SMAPI](https://github.com/Pathoschild/SMAPI)
 * [Ilyaki](https://github.com/Ilyaki) for [StackToNearbyChests](https://github.com/Ilyaki/StackToNearbyChests)
