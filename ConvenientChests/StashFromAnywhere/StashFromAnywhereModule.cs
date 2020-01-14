@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ConvenientChests.CategorizeChests.Framework;
 using ConvenientChests.StackToNearbyChests;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI.Events;
@@ -18,6 +19,11 @@ namespace ConvenientChests.StashFromAnywhere
 
         private StackLogic.AcceptingFunction CreateAcceptingFunction()
         {
+            if (Config.StashAnywhere && Config.StashAnywhereToExistingStacks)
+            {
+                return (chest, item) => ModEntry.CategorizeChests.ChestAcceptsItem(chest, item) || chest.ContainsItem(item);
+            }
+            
             if (Config.StashAnywhere)
             {
                 return (chest, item) => ModEntry.CategorizeChests.ChestAcceptsItem(chest, item);

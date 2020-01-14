@@ -13,6 +13,7 @@ namespace ConvenientChests
         public SButton? StashButton { get; set; } = SButton.RightStick;
 
         public bool StashAnywhere { get; set; } = false;
+        public bool StashAnywhereToExistingStacks { get; set; } = false;
         public SButton StashAnywhereKey { get; set; } = SButton.Z;
 
         public bool CraftFromChests { get; set; } = true;
