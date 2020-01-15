@@ -1,7 +1,6 @@
-using System.Collections.Generic;
+using System.Linq;
 using ConvenientChests.CategorizeChests.Framework;
 using ConvenientChests.StackToNearbyChests;
-using Microsoft.Xna.Framework;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Objects;
@@ -11,19 +10,15 @@ namespace ConvenientChests.StashFromAnywhere
 {
     public class StashFromAnywhereModule : Module
     {
-        private StackLogic.AcceptingFunction AcceptingFunction { get; set; }
+        private StackLogic.AcceptingFunction CategorizedAcceptingFunction { get; set; }
+        private StackLogic.AcceptingFunction ExistingStacksAcceptingFunction { get; set; }
 
         public StashFromAnywhereModule(ModEntry modEntry) : base(modEntry)
         {
         }
 
-        private StackLogic.AcceptingFunction CreateAcceptingFunction()
+        private StackLogic.AcceptingFunction CreateCategorizedAcceptingFunction()
         {
-            if (Config.StashAnywhere && Config.StashAnywhereToExistingStacks)
-            {
-                return (chest, item) => ModEntry.CategorizeChests.ChestAcceptsItem(chest, item) || chest.ContainsItem(item);
-            }
-            
             if (Config.StashAnywhere)
             {
                 return (chest, item) => ModEntry.CategorizeChests.ChestAcceptsItem(chest, item);
@@ -32,11 +27,22 @@ namespace ConvenientChests.StashFromAnywhere
             return (chest, item) => false;
         }
 
+        private StackLogic.AcceptingFunction CreateExistingStacksAcceptingFunction()
+        {
+            if (Config.StashAnywhere && Config.StashAnywhereToExistingStacks)
+            {
+                return (chest, item) => chest.ContainsItem(item);
+            }
+            
+            return (chest, item) => false;
+        }
+
         public override void Activate()
         {
             IsActive = true;
 
-            AcceptingFunction = CreateAcceptingFunction();
+            CategorizedAcceptingFunction = CreateCategorizedAcceptingFunction();
+            ExistingStacksAcceptingFunction = CreateExistingStacksAcceptingFunction();
 
             this.Events.Input.ButtonPressed += OnButtonPressed;
         }
@@ -52,16 +58,21 @@ namespace ConvenientChests.StashFromAnywhere
             if (Game1.player.currentLocation == null)
                 return;
 
-            var locations = Utility.GetLocations();
+            var locations = Utility.GetLocations().ToList();
 
-            foreach (var location in locations)
+            foreach (var pair in locations.SelectMany(location => location.Objects.Pairs))
             {
-                foreach (KeyValuePair<Vector2, Object> pair in location.Objects.Pairs)
+                if (pair.Value is Chest chest)
                 {
-                    if (pair.Value is Chest chest)
-                    {
-                        StackLogic.StashToChest(chest, AcceptingFunction);
-                    }
+                    StackLogic.StashToChest(chest, CategorizedAcceptingFunction);
+                }
+            }
+            
+            foreach (var pair in locations.SelectMany(location => location.Objects.Pairs))
+            {
+                if (pair.Value is Chest chest)
+                {
+                    StackLogic.StashToChest(chest, ExistingStacksAcceptingFunction);
                 }
             }
         }
