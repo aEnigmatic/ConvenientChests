@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ConvenientChests.StashToChests;
 using StardewValley;
 using StardewValley.Locations;
@@ -47,7 +48,12 @@ namespace ConvenientChests.CraftFromChests {
                 return;
 
             // Add them as material containers to current CraftingPage
-            var prop     = page.GetType().GetField("_materialContainers");
+            var prop     = page.GetType().GetField("_materialContainers", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (prop == null) {
+                ModEntry.Log("CraftFromChests failed: CraftingPage._materialContainers not found.");
+                return;
+            }
+                
             var original = prop.GetValue(page) as List<Chest>;
             var modified = new List<Chest>();
             if (original?.Count > 0)
