@@ -35,11 +35,9 @@ namespace ConvenientChests.CraftFromChests {
         }
 
         private void CraftingMenuShown(object sender, EventArgs e) {
-            var isCooking = Game1.activeClickableMenu is CraftingPage
-                         || Game1.activeClickableMenu.GetType().ToString() == "CookingSkill.NewCraftingPage";
-
+            var isCooking = Game1.activeClickableMenu is CraftingPage || Game1.activeClickableMenu.GetType().ToString() == "CookingSkill.NewCraftingPage";
             var page = isCooking
-                           ? (Game1.activeClickableMenu as CraftingPage) ?? Game1.activeClickableMenu
+                           ? Game1.activeClickableMenu
                            : (Game1.activeClickableMenu as GameMenu)?.pages[GameMenu.craftingTab] as CraftingPage;
 
             if (page == null)

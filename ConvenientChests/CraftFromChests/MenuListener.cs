@@ -54,13 +54,8 @@ namespace ConvenientChests.CraftFromChests {
                     break;
 
                 case CraftingPage _:
+                case object m when m.GetType().ToString() == "CookingSkill.NewCraftingPage":
                     CraftingMenuShown?.Invoke(sender, e);
-                    break;
-
-                default:
-                    // cooking skill workanound
-                    if (e.NewMenu.GetType().ToString() == "CookingSkill.NewCraftingPage")
-                        CraftingMenuShown?.Invoke(sender, e);
                     break;
             }
         }
