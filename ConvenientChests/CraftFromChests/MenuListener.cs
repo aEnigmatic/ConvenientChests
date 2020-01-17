@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
@@ -55,6 +55,12 @@ namespace ConvenientChests.CraftFromChests {
 
                 case CraftingPage _:
                     CraftingMenuShown?.Invoke(sender, e);
+                    break;
+
+                default:
+                    // cooking skill workanound
+                    if (e.NewMenu.GetType().ToString() == "CookingSkill.NewCraftingPage")
+                        CraftingMenuShown?.Invoke(sender, e);
                     break;
             }
         }
