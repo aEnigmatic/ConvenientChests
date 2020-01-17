@@ -1,8 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using ConvenientChests.StashToChests;
-using Harmony;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
@@ -48,7 +47,7 @@ namespace ConvenientChests.CraftFromChests {
                 return;
 
             // Add them as material containers to current CraftingPage
-            var prop     = AccessTools.Field(page.GetType(), "_materialContainers");
+            var prop     = page.GetType().GetField("_materialContainers");
             var original = prop.GetValue(page) as List<Chest>;
             var modified = new List<Chest>();
             if (original?.Count > 0)
