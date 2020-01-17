@@ -1,4 +1,4 @@
-using ConvenientChests.CategorizeChests.Framework;
+﻿using ConvenientChests.CategorizeChests.Framework;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
@@ -44,7 +44,7 @@ namespace ConvenientChests.StashToChests {
             if (Game1.player.currentLocation == null)
                 return;
 
-            if (Game1.activeClickableMenu is ItemGrabMenu m && m.behaviorOnItemGrab?.Target is Chest c)
+            if (Game1.activeClickableMenu is ItemGrabMenu m && m.context is Chest c)
                 StackLogic.StashToChest(c, AcceptingFunction);
 
             else
