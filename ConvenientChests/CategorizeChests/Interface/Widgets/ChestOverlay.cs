@@ -1,5 +1,5 @@
 using System;
-using ConvenientChests.StackToNearbyChests;
+using ConvenientChests.StashToChests;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;

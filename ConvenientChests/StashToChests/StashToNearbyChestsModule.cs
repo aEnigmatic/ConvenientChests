@@ -1,10 +1,10 @@
-﻿using ConvenientChests.CategorizeChests.Framework;
+using ConvenientChests.CategorizeChests.Framework;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Objects;
 
-namespace ConvenientChests.StackToNearbyChests {
+namespace ConvenientChests.StashToChests {
     public class StashToNearbyChestsModule : Module {
         public StackLogic.AcceptingFunction AcceptingFunction { get; private set; }
 

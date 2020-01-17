@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using ConvenientChests.StackToNearbyChests;
+using ConvenientChests.StashToChests;
 using Harmony;
 using StardewValley;
 using StardewValley.Locations;

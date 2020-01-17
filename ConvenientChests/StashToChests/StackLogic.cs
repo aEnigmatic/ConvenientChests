@@ -9,7 +9,7 @@ using StardewValley.Locations;
 using StardewValley.Objects;
 using Object = StardewValley.Object;
 
-namespace ConvenientChests.StackToNearbyChests {
+namespace ConvenientChests.StashToChests {
     public static class StackLogic {
         public delegate bool AcceptingFunction(Chest c, Item i);
         

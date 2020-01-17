@@ -119,9 +119,9 @@
     <Compile Include="CraftFromChests\MenuListener.cs" />
     <Compile Include="ModEntry.cs" />
     <Compile Include="Module.cs" />
-    <Compile Include="StashFromAnywhere\StashFromAnywhereModule.cs" />
-    <Compile Include="StackToNearbyChests\StackLogic.cs" />
-    <Compile Include="StackToNearbyChests\StashToNearbyChestsModule.cs" />
+    <Compile Include="StashToChests\StackLogic.cs" />
+    <Compile Include="StashToChests\StashFromAnywhereModule.cs" />
+    <Compile Include="StashToChests\StashToNearbyChestsModule.cs" />
     <Compile Include="ModAPI.cs" />
   </ItemGroup>
   <ItemGroup>

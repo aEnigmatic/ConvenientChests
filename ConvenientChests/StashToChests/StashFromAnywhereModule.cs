@@ -1,12 +1,11 @@
 using System.Linq;
 using ConvenientChests.CategorizeChests.Framework;
-using ConvenientChests.StackToNearbyChests;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Objects;
 using Utility = ConvenientChests.CategorizeChests.Utility;
 
-namespace ConvenientChests.StashFromAnywhere
+namespace ConvenientChests.StashToChests
 {
     public class StashFromAnywhereModule : Module
     {

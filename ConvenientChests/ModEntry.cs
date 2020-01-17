@@ -1,7 +1,6 @@
 ﻿using ConvenientChests.CategorizeChests;
 using ConvenientChests.CraftFromChests;
-using ConvenientChests.StackToNearbyChests;
-using ConvenientChests.StashFromAnywhere;
+using ConvenientChests.StashToChests;
 using StardewModdingAPI;
 
 namespace ConvenientChests {
