@@ -142,7 +142,7 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
 
             var itemKeys = ItemDataManager.Categories[ActiveCategory];
 
-            foreach (var itemKey in itemKeys) {
+            foreach (var itemKey in itemKeys.OrderBy(p => ItemDataManager.GetItem(p).DisplayName)) {
                 var item   = ItemDataManager.GetItem(itemKey);
                 var toggle = ToggleBag.AddChild(new ItemToggle(TooltipManager, item, ChestData.Accepts(itemKey)));
                 toggle.OnToggle += () => ToggleItem(itemKey);
