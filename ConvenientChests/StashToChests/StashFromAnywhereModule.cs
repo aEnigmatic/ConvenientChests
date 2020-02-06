@@ -55,7 +55,7 @@ namespace ConvenientChests.StashToChests
         private void StashGlobally()
         {
             // try to stash to fridge first
-            if (ChestExtension.GetFridge(Game1.player) is Chest fridge)
+            if (Config.StashAnywhereToFridge && ChestExtension.GetFridge(Game1.player) is Chest fridge)
                 StackLogic.StashToChest(fridge, CategorizedAcceptingFunction);
 
             // try to find all chests by location
