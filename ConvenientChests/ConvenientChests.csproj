@@ -103,6 +103,7 @@
     <Compile Include="CategorizeChests\Interface\Widgets\ItemTooltip.cs" />
     <Compile Include="CategorizeChests\Interface\Widgets\Label.cs" />
     <Compile Include="CategorizeChests\Interface\Widgets\LabeledCheckbox.cs" />
+    <Compile Include="CategorizeChests\Interface\Widgets\ScrollBar.cs" />
     <Compile Include="CategorizeChests\Interface\Widgets\SpriteButton.cs" />
     <Compile Include="CategorizeChests\Interface\Widgets\Stamp.cs" />
     <Compile Include="CategorizeChests\Interface\Widgets\TextButton.cs" />
