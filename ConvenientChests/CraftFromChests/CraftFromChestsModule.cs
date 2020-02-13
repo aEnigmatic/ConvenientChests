@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using ConvenientChests.StashToChests;
 using Microsoft.Xna.Framework;
+using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
@@ -38,7 +39,7 @@ namespace ConvenientChests.CraftFromChests {
             var isCooking = Game1.activeClickableMenu is CraftingPage || Game1.activeClickableMenu.GetType().ToString() == "CookingSkill.NewCraftingPage";
             var page = isCooking
                            ? Game1.activeClickableMenu
-                           : (Game1.activeClickableMenu as GameMenu)?.pages[GameMenu.craftingTab] as CraftingPage;
+                           : (Game1.activeClickableMenu as GameMenu)?.pages[Constants.TargetPlatform == GamePlatform.Android ? 3 : GameMenu.craftingTab] as CraftingPage;
 
             if (page == null)
                 return;
