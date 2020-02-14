@@ -53,7 +53,11 @@ namespace ConvenientChests.StashToChests {
             if (Game1.player.currentLocation == null)
                 return;
 
-            var chests = Utility.GetLocations().SelectMany(location => location.Objects.Pairs).Select(pair => pair.Value).OfType<Chest>().ToList();
+            var chests = Utility.GetLocations()
+                                .SelectMany(location => location.Objects.Pairs)
+                                .Select(pair => pair.Value)
+                                .OfType<Chest>()
+                                .ToList();
 
             // stash by category
             foreach (var chest in chests)

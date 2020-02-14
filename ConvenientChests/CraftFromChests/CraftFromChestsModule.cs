@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ConvenientChests.StashToChests;
-using Microsoft.Xna.Framework;
-using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
@@ -12,34 +10,34 @@ using StardewValley.Objects;
 
 namespace ConvenientChests.CraftFromChests {
     public class CraftFromChestsModule : Module {
-        private MenuListener MenuListener;
+        private readonly MenuListener MenuListener;
 
 
         public CraftFromChestsModule(ModEntry modEntry) : base(modEntry) {
-            this.MenuListener = new MenuListener(this.Events);
+            MenuListener = new MenuListener(Events);
         }
 
         public override void Activate() {
             IsActive = true;
 
             // Register Events
-            this.MenuListener.RegisterEvents();
-            this.MenuListener.CraftingMenuShown += CraftingMenuShown;
+            MenuListener.RegisterEvents();
+            MenuListener.CraftingMenuShown += CraftingMenuShown;
         }
 
         public override void Deactivate() {
             IsActive = false;
 
             // Unregister Events
-            this.MenuListener.CraftingMenuShown -= CraftingMenuShown;
-            this.MenuListener.UnregisterEvents();
+            MenuListener.CraftingMenuShown -= CraftingMenuShown;
+            MenuListener.UnregisterEvents();
         }
 
         private void CraftingMenuShown(object sender, EventArgs e) {
             var isCooking = Game1.activeClickableMenu is CraftingPage || Game1.activeClickableMenu.GetType().ToString() == "CookingSkill.NewCraftingPage";
             var page = isCooking
                            ? Game1.activeClickableMenu
-                           : (Game1.activeClickableMenu as GameMenu)?.pages[Constants.TargetPlatform == GamePlatform.Android ? 3 : GameMenu.craftingTab] as CraftingPage;
+                           : (Game1.activeClickableMenu as GameMenu)?.pages[MenuListener.CraftingMenuTab] as CraftingPage;
 
             if (page == null)
                 return;

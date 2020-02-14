@@ -6,6 +6,8 @@ using StardewValley.Menus;
 
 namespace ConvenientChests.CraftFromChests {
     public class MenuListener {
+        public static readonly int CraftingMenuTab = Constants.TargetPlatform == GamePlatform.Android ? 3 : GameMenu.craftingTab;
+        
         private readonly IModEvents Events;
 
         public event EventHandler GameMenuShown;
@@ -84,10 +86,10 @@ namespace ConvenientChests.CraftFromChests {
                     // Tab changed!
                     GameMenuTabChanged?.Invoke(null, EventArgs.Empty);
 
-                    if (_previousTab == (Constants.TargetPlatform == GamePlatform.Android ? 3 : GameMenu.craftingTab))
+                    if (_previousTab == CraftingMenuTab)
                         CraftingMenuClosed?.Invoke(sender, EventArgs.Empty);
 
-                    else if (gameMenu.currentTab == (Constants.TargetPlatform == GamePlatform.Android ? 3 : GameMenu.craftingTab))
+                    else if (gameMenu.currentTab == CraftingMenuTab)
                         CraftingMenuShown?.Invoke(sender, EventArgs.Empty);
 
                     _previousTab = gameMenu.currentTab;
