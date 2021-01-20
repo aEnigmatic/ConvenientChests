@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -88,7 +88,7 @@
     <Compile Include="CategorizeChests\Framework\Persistence\SaveData.cs" />
     <Compile Include="CategorizeChests\Framework\Persistence\SaveManager.cs" />
     <Compile Include="CategorizeChests\Framework\Saver.cs" />
-    <Compile Include="CategorizeChests\Interface\InterfaceHost.cs" />
+    <Compile Include="CategorizeChests\Interface\BaseOverlay.cs" />
     <Compile Include="CategorizeChests\Interface\ITooltipManager.cs" />
     <Compile Include="CategorizeChests\Interface\NineSlice.cs" />
     <Compile Include="CategorizeChests\Interface\Sprites.cs" />
