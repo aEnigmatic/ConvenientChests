@@ -7,7 +7,7 @@ using StardewValley;
 
 namespace ConvenientChests.CategorizeChests.Interface
 {
-    class WidgetHost : InterfaceHost
+    class WidgetHost : BaseOverlay
     {
         public readonly Widget RootWidget;
         public readonly ITooltipManager TooltipManager;
@@ -19,7 +19,7 @@ namespace ConvenientChests.CategorizeChests.Interface
             TooltipManager = new TooltipManager();
         }
 
-        protected override void Draw(SpriteBatch batch)
+        protected override void DrawUi(SpriteBatch batch)
         {
             RootWidget.Draw(batch);
             DrawCursor();

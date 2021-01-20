@@ -48,7 +48,7 @@ namespace ConvenientChests.CraftFromChests {
                 return;
 
             // Add them as material containers to current CraftingPage
-            var prop = page.GetType().GetField("_materialContainers", BindingFlags.NonPublic | BindingFlags.Instance);
+            var prop = page.GetType().GetField("_materialContainers", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
             if (prop == null) {
                 ModEntry.Log($"CraftFromChests failed: {page.GetType()}._materialContainers not found.");
                 return;
