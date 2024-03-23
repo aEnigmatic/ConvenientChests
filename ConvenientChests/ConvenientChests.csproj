@@ -25,8 +25,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.0.2" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
   </ItemGroup>
   <ItemGroup>
     <None Update="manifest.json">
