@@ -75,6 +75,7 @@ namespace ConvenientChests.CategorizeChests.Framework
             new ItemKey(ItemType.Object, "788"), // Lost Axe
             new ItemKey(ItemType.Object, "789"), // Lucky Purple Shorts
             new ItemKey(ItemType.Object, "790"), // Berry Basket
+            new ItemKey(ItemType.Object, "892"), // Warp Totem: Qi's Arena
             new ItemKey(ItemType.Object, "925"), // Slime Crate
             new ItemKey(ItemType.Object, "927"), // Camping Stove
             new ItemKey(ItemType.Object, "929"), // Hedge
