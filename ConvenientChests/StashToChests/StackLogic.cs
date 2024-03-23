@@ -54,26 +54,25 @@ namespace ConvenientChests.StashToChests {
 
         private static IEnumerable<Chest> GetNearbyChests(GameLocation location, Vector2 point, int radius) {
             // chests
-            foreach (Chest c in GetNearbyObjects<Chest>(location, point, radius))
+            foreach (var c in GetNearbyObjects<Chest>(location, point, radius))
                 yield return c;
 
-            switch (location) {
-                // fridge
-                case FarmHouse farmHouse when farmHouse.upgradeLevel > 0:
-                    if (InRadius(radius, point, farmHouse.getKitchenStandingSpot().X + 1, farmHouse.getKitchenStandingSpot().Y - 2))
-                        yield return farmHouse.fridge.Value;
-                    break;
-
-                // buildings
-                case GameLocation l:
-                    foreach (var building in l.buildings.Where(b => InRadius(radius, point, b.tileX.Value, b.tileY.Value)))
-                        if (building is JunimoHut junimoHut)
-                            yield return junimoHut.GetOutputChest();
-                        else
-                            foreach (var chest in building.buildingChests)
-                                yield return chest;
-                    break;
+            // fridge
+            if (location is FarmHouse { upgradeLevel: > 0 } farmHouse) {
+                if (InRadius(radius, point,
+                        farmHouse.getKitchenStandingSpot().X + 1,
+                        farmHouse.getKitchenStandingSpot().Y - 2))
+                    yield return farmHouse.fridge.Value;
+                
+                yield break;
             }
+
+            // buildings
+            var buildings = location.buildings
+                .Where(building => InRadius(radius, point, building.tileX.Value, building.tileY.Value));
+
+            foreach (var chest in buildings.SelectMany(building => building.buildingChests))
+                yield return chest;
         }
 
         private static IEnumerable<T> GetNearbyObjects<T>(GameLocation location, Vector2 point, int radius) where T : Object =>
