@@ -1,6 +1,7 @@
 using System;
 using ConvenientChests.StashToChests;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Characters;
@@ -41,6 +42,11 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
             if (parent == null) return;
             Width = parent.Width;
             Height = parent.Height;
+        }
+
+        public override void Draw(SpriteBatch batch) {
+            base.Draw(batch);
+            TooltipManager.Draw(batch);
         }
 
         private void AddButtons() {
