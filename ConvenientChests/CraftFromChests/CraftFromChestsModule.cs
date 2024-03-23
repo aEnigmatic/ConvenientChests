@@ -45,28 +45,23 @@ namespace ConvenientChests.CraftFromChests {
                 return;
 
             // Add them as material containers to current CraftingPage
-            var prop = page.GetType().GetField("_materialContainers", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-            if (prop == null) {
-                ModEntry.Log($"CraftFromChests failed: {page.GetType()}._materialContainers not found.");
-                return;
-            }
+            var inventories = nearbyChests.Select(chest => chest.Items as IInventory);
 
-            var original = prop.GetValue(page) as List<Chest>;
-            var modified = new List<Chest>();
-            if (original?.Count > 0)
-                modified.AddRange(original);
-            modified.AddRange(nearbyChests);
+            if (page._materialContainers == null)
+                page._materialContainers = inventories.ToList();
 
-            prop.SetValue(page, modified.Distinct().Select(i => i.Items).Cast<IInventory>().ToList());
+            else
+                page._materialContainers.AddRange(inventories);
         }
 
         private IEnumerable<Chest> GetChests(bool isCookingScreen) {
             // nearby chests
-            var chests = Game1.player.GetNearbyChests(Config.CraftRadius).Where(c => c.Items.Any(i => i != null)).ToList();
+            var chests = Game1.player.GetNearbyChests(Config.CraftRadius).Where(c => c.Items.Any(i => i != null))
+                .ToList();
             foreach (var c in chests)
                 yield return c;
 
-            // always add fridge when on cooking screen
+            // always add home fridge when on cooking screen
             if (!isCookingScreen)
                 yield break;
 
