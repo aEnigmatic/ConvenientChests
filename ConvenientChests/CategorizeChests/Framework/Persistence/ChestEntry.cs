@@ -32,12 +32,12 @@ namespace ConvenientChests.CategorizeChests.Framework.Persistence
                 .GroupBy(i => i.ItemType)
                 .ToDictionary(
                     g => g.Key,
-                    g => string.Join(",", g.Select(i => i.ObjectIndex))
+                    g => string.Join(",", g.Select(i => i.ItemId))
                 );
         }
 
 
         public HashSet<ItemKey> GetItemSet() =>
-            new HashSet<ItemKey>(AcceptedItems.SelectMany(e => e.Value.Split(',').Select(i => new ItemKey(e.Key, int.Parse(i)))));
+            new HashSet<ItemKey>(AcceptedItems.SelectMany(e => e.Value.Split(',').Select(i => new ItemKey(e.Key, i))));
     }
 }

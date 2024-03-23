@@ -73,15 +73,17 @@ namespace ConvenientChests.CategorizeChests.Framework {
             switch (item) {
                 // Tool family overrides
                 case Axe _:
-                    return ToolFactory.getToolFromDescription(ToolFactory.axe, 0).ToItemKey();
+                    return new Axe().ToItemKey();
                 case Pickaxe _:
-                    return ToolFactory.getToolFromDescription(ToolFactory.pickAxe, 0).ToItemKey();
+                    return new Pickaxe().ToItemKey();
                 case Hoe _:
-                    return ToolFactory.getToolFromDescription(ToolFactory.hoe, 0).ToItemKey();
+                    return new Hoe().ToItemKey();
                 case WateringCan _:
-                    return ToolFactory.getToolFromDescription(ToolFactory.wateringCan, 0).ToItemKey();
+                    return new WateringCan().ToItemKey();
                 case FishingRod _:
-                    return ToolFactory.getToolFromDescription(ToolFactory.fishingRod, 0).ToItemKey();
+                    return new FishingRod().ToItemKey();
+                case Pan _:
+                    return new Pan().ToItemKey();
 
                 default:
                     return item.ToItemKey();
@@ -104,39 +106,37 @@ namespace ConvenientChests.CategorizeChests.Framework {
         /// <returns>A collection of all of the item entries.</returns>
         private IEnumerable<Item> DiscoverItems() {
             // upgradable tools
-            yield return ToolFactory.getToolFromDescription(ToolFactory.axe,         Tool.stone);
-            yield return ToolFactory.getToolFromDescription(ToolFactory.hoe,         Tool.stone);
-            yield return ToolFactory.getToolFromDescription(ToolFactory.pickAxe,     Tool.stone);
-            yield return ToolFactory.getToolFromDescription(ToolFactory.wateringCan, Tool.stone);
-            yield return ToolFactory.getToolFromDescription(ToolFactory.fishingRod,  Tool.stone);
+            yield return new Axe();
+            yield return new Hoe();
+            yield return new Pickaxe();
+            yield return new Pan();
+            yield return new WateringCan();
+            yield return new FishingRod();
 
             // other tools
             yield return new MilkPail();
             yield return new Shears();
-            yield return new Pan();
-            yield return new MagnifyingGlass();
             yield return new Wand();
 
             // equipment
-            foreach (int id in Game1.content.Load<Dictionary<int, string>>("Data\\Boots").Keys)
+            foreach (string id in DataLoader.Boots(Game1.content).Keys)
                 yield return new Boots(id);
 
-            foreach (int id in Game1.content.Load<Dictionary<int, string>>("Data\\hats").Keys)
+            foreach (string id in DataLoader.Hats(Game1.content).Keys)
                 yield return new Hat(id);
 
-            for (int id = Ring.ringLowerIndexRange; id <= Ring.ringUpperIndexRange; id++)
-                    yield return new Ring(id);
+            // rings handled under objects
 
             // weapons
             foreach (var item in ItemHelper.GetWeapons())
                 yield return item;
 
             // objects
-            foreach (int id in Game1.objectInformation.Keys) {
-                if (id >= Ring.ringLowerIndexRange && id <= Ring.ringUpperIndexRange)
-                    continue; // handled separated
-               
-                yield return new StardewObject(id, 1);
+            foreach (var (id, objectData) in Game1.objectData) {
+                if (objectData.Type.Equals("Ring"))
+                    yield return new Ring(id);
+                else
+                    yield return new StardewObject(id, 1);
             }
         }
 
@@ -148,7 +148,7 @@ namespace ConvenientChests.CategorizeChests.Framework {
         /// <param name="itemKey">The item key to categorize.</param>
         public string GetCategoryName(ItemKey itemKey) {
             // move scythe to tools
-            if (itemKey.ItemType == ItemType.Weapon && itemKey.ObjectIndex == MeleeWeapon.scythe)
+            if (itemKey.ItemType == ItemType.Weapon && MeleeWeapon.IsScythe(itemKey.ItemId))
                 return "Tool";
 
             if (itemKey.ItemType != ItemType.Object)

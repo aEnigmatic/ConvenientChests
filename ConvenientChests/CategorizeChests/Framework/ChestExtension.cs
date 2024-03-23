@@ -32,7 +32,7 @@ namespace ConvenientChests.CategorizeChests.Framework {
             throw new Exception("Cooking from the outside as farmhand?");
         }
 
-        public static bool ContainsItem(this Chest chest, Item i) => chest.items.Any(i.canStackWith);
+        public static bool ContainsItem(this Chest chest, Item i) => chest.Items.Any(i.canStackWith);
 
         ///  <summary>
         ///  Attempt to move as much as possible of the player's inventory into the given chest
@@ -81,6 +81,6 @@ namespace ConvenientChests.CategorizeChests.Framework {
         /// <returns>Whether at least one slot is empty.</returns>
         /// <param name="chest">The chest to check.</param>
         public static bool HasEmptySlots(this Chest chest)
-            => chest.items.Count < Chest.capacity || chest.items.Any(i => i == null);
+            => chest.Items.Count < Chest.capacity || chest.Items.Any(i => i == null);
     }
 }

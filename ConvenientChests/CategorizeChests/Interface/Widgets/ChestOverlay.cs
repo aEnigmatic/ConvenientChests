@@ -56,11 +56,13 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
         }
 
         private void PositionButtons() {
+            var delta = Chest.SpecialChestType == Chest.SpecialChestTypes.BigChest ? -128 : -112;
+
             StashButton.Width = OpenButton.Width = Math.Max(StashButton.Width, OpenButton.Width);
 
             OpenButton.Position = new Point(
-                    ItemGrabMenu.xPositionOnScreen + ItemGrabMenu.width / 2 - OpenButton.Width - 112 * Game1.pixelZoom,
-                    ItemGrabMenu.yPositionOnScreen                                             + 22  * Game1.pixelZoom
+                    ItemGrabMenu.xPositionOnScreen + ItemGrabMenu.width / 2 - OpenButton.Width + delta * Game1.pixelZoom,
+                    ItemGrabMenu.yPositionOnScreen                                             + 22    * Game1.pixelZoom
                 );
 
             StashButton.Position = new Point(

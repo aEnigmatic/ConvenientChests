@@ -8,54 +8,54 @@ using Object = StardewValley.Object;
 namespace ConvenientChests.CategorizeChests.Framework {
     internal struct ItemKey {
         public ItemType ItemType    { get; }
-        public int      ObjectIndex { get; }
+        public string   ItemId { get; }
 
-        public ItemKey(ItemType itemType, int parentSheetIndex) {
+        public ItemKey(ItemType itemType, string itemId) {
             ItemType    = itemType;
-            ObjectIndex = parentSheetIndex;
+            ItemId      = itemId;
         }
 
-        public override int GetHashCode() => (int) ItemType * 10000 + ObjectIndex;
+        public override int GetHashCode() => ToString().GetHashCode();
 
-        public override string ToString() => $"{ItemType}:{ObjectIndex}";
+        public override string ToString() => $"{ItemType}:{ItemId}";
 
-        public override bool Equals(object obj) => obj is ItemKey itemKey          &&
-                                                   itemKey.ItemType    == ItemType &&
-                                                   itemKey.ObjectIndex == ObjectIndex;
+        public override bool Equals(object obj) => obj is ItemKey itemKey       &&
+                                                   itemKey.ItemType == ItemType &&
+                                                   itemKey.ItemId   == ItemId;
 
         public Item GetOne() {
             switch (ItemType) {
                 case ItemType.Boots:
-                    return new Boots(ObjectIndex);
+                    return new Boots(ItemId);
 
                 case ItemType.Furniture:
-                    return new Furniture(ObjectIndex, Vector2.Zero);
+                    return new Furniture(ItemId, Vector2.Zero);
 
                 case ItemType.Hat:
-                    return new Hat(ObjectIndex);
+                    return new Hat(ItemId);
 
                 case ItemType.Fish:
                 case ItemType.Object:
                 case ItemType.BigCraftable:
-                    return new Object(ObjectIndex, 1);
+                    return new Object(ItemId, 1);
 
                 case ItemType.Ring:
-                    return new Ring(ObjectIndex);
+                    return new Ring(ItemId);
 
                 case ItemType.Tool:
-                    return ToolFactory.getToolFromDescription((byte) ObjectIndex, Tool.stone);
+                    return ItemRegistry.Create(ItemId);
 
                 case ItemType.Wallpaper:
-                    return new Wallpaper(ObjectIndex);
+                    return ItemRegistry.Create($"(WP){ItemId}");
 
                 case ItemType.Flooring:
-                    return new Wallpaper(ObjectIndex, true);
+                    return ItemRegistry.Create($"(FL){ItemId}");
 
                 case ItemType.Weapon:
-                    return new MeleeWeapon(ObjectIndex);
+                    return new MeleeWeapon(ItemId);
 
                 case ItemType.Gate:
-                    return new Fence(Vector2.Zero, ObjectIndex, true);
+                    return new Fence(Vector2.Zero, ItemId, true);
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -64,7 +64,7 @@ namespace ConvenientChests.CategorizeChests.Framework {
 
         public string GetCategory() {
             // move scythe to tools
-            if (ItemType == ItemType.Weapon && ObjectIndex == MeleeWeapon.scythe)
+            if (ItemType == ItemType.Weapon && MeleeWeapon.IsScythe(ItemId))
                 return Game1.content.LoadString("Strings\\StringsFromCSFiles:Tool.cs.14307");
 
             if (ItemType != ItemType.Object)

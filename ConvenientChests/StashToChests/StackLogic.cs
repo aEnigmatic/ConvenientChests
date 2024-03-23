@@ -14,7 +14,7 @@ namespace ConvenientChests.StashToChests {
         public delegate bool AcceptingFunction(Chest c, Item i);
         
         public static IEnumerable<Chest> GetNearbyChests(this Farmer farmer, int radius)
-            => GetNearbyChests(farmer.currentLocation, farmer.getTileLocation(), radius);
+            => GetNearbyChests(farmer.currentLocation, farmer.Tile, radius);
 
         public static void StashToChest(Chest chest, AcceptingFunction f) {
             ModEntry.Log("Stash to current chest");
@@ -65,13 +65,13 @@ namespace ConvenientChests.StashToChests {
                     break;
 
                 // buildings
-                case BuildableGameLocation l:
+                case GameLocation l:
                     foreach (var building in l.buildings.Where(b => InRadius(radius, point, b.tileX.Value, b.tileY.Value)))
                         if (building is JunimoHut junimoHut)
-                            yield return junimoHut.output.Value;
-
-                        else if (building is Mill mill)
-                            yield return mill.output.Value;
+                            yield return junimoHut.GetOutputChest();
+                        else
+                            foreach (var chest in building.buildingChests)
+                                yield return chest;
                     break;
             }
         }

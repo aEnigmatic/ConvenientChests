@@ -7,9 +7,9 @@ namespace ConvenientChests.CategorizeChests.Framework
         public readonly ItemKey ItemKey;
         public readonly Item Item;
 
-        public DiscoveredItem(ItemType type, int index, Item item)
+        public DiscoveredItem(ItemType type, string itemId, Item item)
         {
-            ItemKey = new ItemKey(type, index);
+            ItemKey = new ItemKey(type, itemId);
             Item = item;
         }
     }

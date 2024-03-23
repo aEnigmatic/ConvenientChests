@@ -46,24 +46,24 @@ namespace ConvenientChests.CategorizeChests.Framework
                         new ChestAddress(location.Name, pair.Key)
                     );
 
-                switch (location)
-                {
-                    // buildings
-                    case BuildableGameLocation buildableLocation:
-                        foreach (var building in buildableLocation.buildings.Where(b => b.indoors.Value != null))
-                        foreach (var pair in GetLocationChests(building.indoors.Value))
-                            yield return new ChestEntry(
-                                ChestDataManager.GetChestData(pair.Value),
-                                new ChestAddress(location.Name, pair.Key, ChestLocationType.Building, building.nameOfIndoors)
-                            );
-                        break;
+                switch (location) {
 
                     // fridges
                     case FarmHouse farmHouse when farmHouse.upgradeLevel >= 1:
                         yield return new ChestEntry(
                             ChestDataManager.GetChestData(farmHouse.fridge.Value),
-                            new ChestAddress {LocationName = farmHouse.uniqueName?.Value ?? farmHouse.Name, LocationType = ChestLocationType.Refrigerator}
+                            new ChestAddress { LocationName = farmHouse.uniqueName?.Value ?? farmHouse.Name, LocationType = ChestLocationType.Refrigerator }
                            );
+                        break;
+
+                    // buildings
+                    case GameLocation buildableLocation:
+                        foreach (var building in buildableLocation.buildings.Where(b => b.indoors.Value != null))
+                        foreach (var pair in GetLocationChests(building.indoors.Value))
+                            yield return new ChestEntry(
+                                ChestDataManager.GetChestData(pair.Value),
+                                new ChestAddress(location.Name, pair.Key, ChestLocationType.Building, building.GetIndoorsName())
+                            );
                         break;
                 }
             }

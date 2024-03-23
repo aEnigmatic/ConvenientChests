@@ -65,7 +65,7 @@ namespace ConvenientChests.CraftFromChests {
 
         private IEnumerable<Chest> GetChests(bool isCookingScreen) {
             // nearby chests
-            var chests = Game1.player.GetNearbyChests(Config.CraftRadius).Where(c => c.items.Any(i => i != null)).ToList();
+            var chests = Game1.player.GetNearbyChests(Config.CraftRadius).Where(c => c.Items.Any(i => i != null)).ToList();
             foreach (var c in chests)
                 yield return c;
 

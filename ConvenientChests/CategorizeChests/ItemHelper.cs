@@ -6,9 +6,11 @@ using StardewValley;
 using StardewValley.Objects;
 using StardewValley.Tools;
 
+using Console = System.Console;
+
 namespace ConvenientChests.CategorizeChests {
     internal static class ItemHelper {
-        public static ItemKey ToItemKey(this Item item) => new ItemKey(GetItemType(item), GetItemID(item));
+        public static ItemKey ToItemKey(this Item item) => new ItemKey(GetItemType(item), item.ItemId);
 
         public static Item GetCopy(this Item item) {
             if (item == null)
@@ -20,12 +22,12 @@ namespace ConvenientChests.CategorizeChests {
         }
 
         public static IEnumerable<Item> GetWeapons() {
-            foreach (var e in Game1.content.Load<Dictionary<int, string>>("Data\\weapons"))
-                if (e.Value.Split('/')[8] == "4")
-                    yield return new Slingshot(e.Key);
-                
-                else
-                    yield return new MeleeWeapon(e.Key);
+            foreach (var itemId in Game1.weaponData.Keys)
+                yield return new MeleeWeapon(itemId);
+
+            yield return new Slingshot(Slingshot.basicSlingshotId);
+            yield return new Slingshot(Slingshot.masterSlingshotId);
+            yield return new Slingshot(Slingshot.galaxySlingshotId); // unobtainable; filter out later
         }
 
         public static ItemType GetItemType(Item item) {
@@ -73,31 +75,6 @@ namespace ConvenientChests.CategorizeChests {
             }
 
             return ItemType.Object;
-        }
-
-        public static int GetItemID(Item item) {
-            switch (item) {
-                case Boots a:
-                    return a.indexInTileSheet.Value;
-
-                case Ring a:
-                    return a.indexInTileSheet.Value;
-
-                case Hat a:
-                    return a.which.Value;
-
-                case Tool a:
-                    return a.InitialParentTileIndex;
-
-                case Fence a:
-                    if (a.isGate.Value)
-                        return 0;
-
-                    return a.whichType.Value;
-
-                default:
-                    return item.ParentSheetIndex;
-            }
         }
     }
 }
