@@ -34,17 +34,13 @@ namespace ConvenientChests.CraftFromChests {
             MenuListener.UnregisterEvents();
         }
 
-        private void CraftingMenuShown(object sender, EventArgs e) {
-            var isCooking = Game1.activeClickableMenu is CraftingPage || Game1.activeClickableMenu.GetType().ToString() == "CookingSkill.NewCraftingPage";
-            var page = isCooking
-                           ? Game1.activeClickableMenu
-                           : (Game1.activeClickableMenu as GameMenu)?.pages[MenuListener.CraftingMenuTab] as CraftingPage;
-
+        private void CraftingMenuShown(object sender, CraftingMenuArgs e) {
+            var page = e.Page;
             if (page == null)
                 return;
 
             // Find nearby chests
-            var nearbyChests = GetChests(isCooking).ToList();
+            var nearbyChests = GetChests(e.IsCookingPage).ToList();
             if (!nearbyChests.Any())
                 return;
 
