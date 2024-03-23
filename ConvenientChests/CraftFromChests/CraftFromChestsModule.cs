@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using ConvenientChests.StashToChests;
 using StardewValley;
+using StardewValley.Inventories;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Objects;
@@ -60,7 +61,7 @@ namespace ConvenientChests.CraftFromChests {
                 modified.AddRange(original);
             modified.AddRange(nearbyChests);
 
-            prop.SetValue(page, modified.Distinct().ToList());
+            prop.SetValue(page, modified.Distinct().Select(i => i.Items).Cast<IInventory>().ToList());
         }
 
         private IEnumerable<Chest> GetChests(bool isCookingScreen) {
