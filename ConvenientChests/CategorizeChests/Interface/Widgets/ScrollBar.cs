@@ -117,7 +117,7 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
             base.Draw(batch);
         }
 
-        private void Scroll(int direction) {
+        public void Scroll(int direction) {
             if (ScrollMax == 0)
                 return;
 

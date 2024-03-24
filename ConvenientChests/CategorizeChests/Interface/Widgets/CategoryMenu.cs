@@ -196,7 +196,17 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
         }
 
         public override bool ReceiveScrollWheelAction(int amount) {
-            CycleCategory(amount > 1 ? -1 : 1);
+            var direction = amount > 1 ? -1 : 1;
+
+            if (ScrollBar.Visible)
+                switch (direction) {
+                    case -1 when ScrollBar.ScrollPosition > 0:
+                    case +1 when ScrollBar.ScrollPosition < ScrollBar.ScrollMax:
+                        ScrollBar.Scroll(direction);
+                        return true;
+                }
+
+            CycleCategory(direction);
             return true;
         }
     }
