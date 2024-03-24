@@ -149,7 +149,6 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
                .Concat(Game1.options.useToolButton.Select(SButtonExtensions.ToSButton));
 
             if (!buttons.Any(b => ModEntry.StaticHelper.Input.IsDown(b) || ModEntry.StaticHelper.Input.IsSuppressed(b))) {
-                Console.Out.WriteLine($"Stop scroll because of all");
                 _scrolling = false;
                 return;
             }
@@ -165,8 +164,11 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
         /// Cancel scrolling on button release
         /// </summary>
         private void InputOnButtonReleased(object sender, ButtonReleasedEventArgs e) {
-            if (_scrolling && (e.Button == SButton.MouseLeft || e.Button.IsUseToolButton()))
-                _scrolling = false;
+            if (!_scrolling || e.IsSuppressed())
+                // also check if the released button was suppressed
+                return;
+
+            _scrolling = false;
         }
 
 
