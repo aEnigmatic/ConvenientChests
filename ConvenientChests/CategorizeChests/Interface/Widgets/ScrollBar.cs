@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -55,6 +57,13 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
 
             ModEntry.StaticHelper.Events.Input.ButtonReleased  += InputOnButtonReleased;
             ModEntry.StaticHelper.Events.GameLoop.UpdateTicked += GameLoopOnUpdateTicked;
+        }
+
+        public override void Dispose() {
+            ModEntry.StaticHelper.Events.Input.ButtonReleased -= InputOnButtonReleased;
+            ModEntry.StaticHelper.Events.GameLoop.UpdateTicked -= GameLoopOnUpdateTicked;
+
+            base.Dispose();
         }
 
         protected override void OnDimensionsChanged() {
@@ -121,13 +130,9 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
         protected bool _scrolling = false;
 
         public override bool ReceiveLeftClick(Point point) {
-            if (base.ReceiveLeftClick(point))
-                return true;
-
             var localPoint = new Point(point.X - Runner.Position.X, point.Y - Runner.Position.Y);
             if (Runner.LocalBounds.Contains(localPoint))
                 _scrolling = true;
-
 
             return true;
         }
@@ -139,7 +144,17 @@ namespace ConvenientChests.CategorizeChests.Interface.Widgets {
             if (!_scrolling)
                 return;
 
-            var mouseY   = Game1.getMouseY();
+            // check if scroll buttons are still active
+            var buttons = new List<SButton> { SButton.MouseLeft }
+               .Concat(Game1.options.useToolButton.Select(SButtonExtensions.ToSButton));
+
+            if (!buttons.Any(b => ModEntry.StaticHelper.Input.IsDown(b) || ModEntry.StaticHelper.Input.IsSuppressed(b))) {
+                Console.Out.WriteLine($"Stop scroll because of all");
+                _scrolling = false;
+                return;
+            }
+
+            var mouseY   = Game1.getMouseY(true);
             var progress = Math.Min(Math.Max(0f, mouseY - ScrollBackground.Y) / (Height), 1);
             ScrollPosition = (int) (progress * ScrollMax);
 
