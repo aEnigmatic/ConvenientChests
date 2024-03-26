@@ -23,9 +23,9 @@ namespace ConvenientChests.CategorizeChests {
 
         private WidgetHost WidgetHost { get; set; }
 
-        internal bool ChestAcceptsItem(Chest chest, Item item) =>
-            item != null && ChestAcceptsItem(chest, ItemDataManager.GetItemKey(item));
-        internal bool ChestAcceptsItem(Chest chest, ItemKey itemKey) => ChestDataManager.GetChestData(chest).Accepts(itemKey);
+        internal bool ChestAcceptsItem(Chest chest, Item item) => ChestAcceptsItem(chest, item.ToBase().ToItemKey());
+        private bool ChestAcceptsItem(Chest chest, ItemKey itemKey) 
+            => !ItemBlacklist.Includes(itemKey) && ChestDataManager.GetChestData(chest).Accepts(itemKey);
 
         public CategorizeChestsModule(ModEntry modEntry) : base(modEntry) {
         }
@@ -34,12 +34,12 @@ namespace ConvenientChests.CategorizeChests {
             IsActive = true;
 
             // Menu Events
-            this.Events.Display.MenuChanged += OnMenuChanged;
+            Events.Display.MenuChanged += OnMenuChanged;
 
             if (Context.IsMultiplayer && !Context.IsMainPlayer) {
                 ModEntry.Log(
-                    "Due to limitations in the network code, CHEST CATEGORIES CAN NOT BE SAVED as farmhand, sorry :(",
-                    LogLevel.Warn);
+                             "Due to limitations in the network code, CHEST CATEGORIES CAN NOT BE SAVED as farmhand, sorry :(",
+                             LogLevel.Warn);
                 return;
             }
 

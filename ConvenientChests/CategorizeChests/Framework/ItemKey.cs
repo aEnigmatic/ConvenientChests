@@ -1,77 +1,69 @@
-using System;
-using Microsoft.Xna.Framework;
 using StardewValley;
-using StardewValley.Objects;
 using StardewValley.Tools;
 using Object = StardewValley.Object;
 
 namespace ConvenientChests.CategorizeChests.Framework {
-    internal struct ItemKey {
-        public ItemType ItemType    { get; }
-        public string   ItemId { get; }
+    public readonly struct ItemKey {
+        public string ItemId { get; }
+        public string TypeDefinition { get; }
 
-        public ItemKey(ItemType itemType, string itemId) {
-            ItemType    = itemType;
-            ItemId      = itemId;
+        public string QualifiedItemId => $"{TypeDefinition}{ItemId}";
+
+        public ItemKey(string typeDefinition, string itemId) {
+            TypeDefinition = typeDefinition;
+            ItemId = itemId;
         }
 
-        public override int GetHashCode() => ToString().GetHashCode();
-
-        public override string ToString() => $"{ItemType}:{ItemId}";
-
-        public override bool Equals(object obj) => obj is ItemKey itemKey       &&
-                                                   itemKey.ItemType == ItemType &&
-                                                   itemKey.ItemId   == ItemId;
-
-        public Item GetOne() {
-            switch (ItemType) {
-                case ItemType.Boots:
-                    return new Boots(ItemId);
-
-                case ItemType.Furniture:
-                    return new Furniture(ItemId, Vector2.Zero);
-
-                case ItemType.Hat:
-                    return new Hat(ItemId);
-
-                case ItemType.Fish:
-                case ItemType.Object:
-                case ItemType.BigCraftable:
-                    return new Object(ItemId, 1);
-
-                case ItemType.Ring:
-                    return new Ring(ItemId);
-
-                case ItemType.Tool:
-                    return ItemRegistry.Create(ItemId);
-
-                case ItemType.Wallpaper:
-                    return ItemRegistry.Create($"(WP){ItemId}");
-
-                case ItemType.Flooring:
-                    return ItemRegistry.Create($"(FL){ItemId}");
-
-                case ItemType.Weapon:
-                    return new MeleeWeapon(ItemId);
-
-                case ItemType.Gate:
-                    return new Fence(Vector2.Zero, ItemId, true);
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+        public ItemKey(string qualifiedItemId) {
+            var item = ItemRegistry.Create(qualifiedItemId);
+            TypeDefinition = item.TypeDefinitionId;
+            ItemId = item.ItemId;
         }
+
+        public override int GetHashCode() => QualifiedItemId.GetHashCode();
+        public override string ToString() => QualifiedItemId;
+
+        public override bool Equals(object obj)
+            => obj is ItemKey itemKey &&
+               itemKey.TypeDefinition == TypeDefinition &&
+               itemKey.ItemId == ItemId;
+
+        public Item GetOne() => ItemRegistry.Create(QualifiedItemId);
+        public T GetOne<T>() where T : Item => ItemRegistry.Create<T>(QualifiedItemId);
+
 
         public string GetCategory() {
-            // move scythe to tools
-            if (ItemType == ItemType.Weapon && MeleeWeapon.IsScythe(ItemId))
-                return Game1.content.LoadString("Strings\\StringsFromCSFiles:Tool.cs.14307");
+            switch (TypeDefinition) {
+                case "(T)":
+                case "(W)" when MeleeWeapon.IsScythe(QualifiedItemId):
+                    // move scythes to tools
+                    return Object.GetCategoryDisplayName(Object.toolCategory);
 
-            if (ItemType != ItemType.Object)
-                return ItemType.ToString();
+                case "(W)":
+                    // weapon subgroups
+                    // return GetOne() switch {
+                    //            MeleeWeapon w => w.type.Value switch {
+                    //                                 1 => Game1.content.LoadString("Strings\\StringsFromCSFiles:Tool.cs.14304"),
+                    //                                 2 => Game1.content.LoadString("Strings\\StringsFromCSFiles:Tool.cs.14305"),
+                    //                                 _ => Game1.content.LoadString("Strings\\StringsFromCSFiles:Tool.cs.14306"),
+                    //                             },
+                    //            Slingshot => new Slingshot().DisplayName,
+                    //            _ => "Weapon",
+                    //        };
+                    return "Weapon";
 
-            var categoryName = GetOne().getCategoryName();
-            return string.IsNullOrEmpty(categoryName) ? "Miscellaneous" : categoryName;
+                case "(FL)":
+                    return Game1.content.LoadString("Strings\\StringsFromCSFiles:Wallpaper.cs.13203");
+
+                case "(WP)":
+                    return Game1.content.LoadString("Strings\\StringsFromCSFiles:Wallpaper.cs.13204");
+
+                default:
+                    var categoryName = GetOne().getCategoryName();
+                    return string.IsNullOrEmpty(categoryName)
+                               ? "Miscellaneous"
+                               : categoryName;
+            }
         }
     }
 }
