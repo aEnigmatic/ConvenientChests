@@ -1,21 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
+using StardewModdingAPI;
+using StardewValley;
+using StardewValley.ItemTypeDefinitions;
+using Object = StardewValley.Object;
 
-namespace ConvenientChests.CategorizeChests.Framework
-{
+namespace ConvenientChests.CategorizeChests.Framework {
     /// <summary>
     /// Maintains the list of items that should be excluded from the available
     /// items to use for categorization, e.g. unobtainable items and bug items.
     /// </summary>
-    static class ItemBlacklist
-    {
+    static class ItemBlacklist {
         /// <summary>
         /// Check whether a given item key is blacklisted.
         /// </summary>
         /// <returns>Whether the key is blacklisted.</returns>
         /// <param name="itemKey">Item key to check.</param>
-        public static bool Includes(ItemKey itemKey) => itemKey.TypeDefinition == "(BC)" // big craftables
-                                                     || itemKey.TypeDefinition == "(F)" // furniture
-                                                     || BlacklistedItemIDs.Contains(itemKey.QualifiedItemId);
+        public static bool Includes(ItemKey itemKey) =>
+            itemKey.TypeDefinition == "(F)"
+         || itemKey.TypeDefinition == "(BC)" && !itemKey.GetOne<Object>().IsCraftable()
+         || BlacklistedItemIDs.Contains(itemKey.QualifiedItemId);
 
         private static readonly HashSet<string> BlacklistedItemIDs = new HashSet<string> {
             // stones
@@ -159,7 +165,7 @@ namespace ConvenientChests.CategorizeChests.Framework
             "(O)892", // Warp Totem: Qi's Arena
             "(O)927", // Camping Stove
             "(O)929", // Hedge
-            
+
             "(W)25", // Alex's Bat
             "(W)30", // Sam's Old Guitar
             "(W)35", // Elliott's Pencil
@@ -181,6 +187,15 @@ namespace ConvenientChests.CategorizeChests.Framework
             "(B)515", // Cowboy Boots
 
             "(O)SeedSpot",
+
+            // secrets
+            "(BC)95", // Stone Owl
+            "(BC)96", // Strange Capsule
+            "(BC)98", // Empty Capsule
+            "(BC)155", // ??HMTGF??
+            "(BC)161", // ??Pinky Lemon??
+            "(BC)162", // ??Foroguemon??
+            "(BC)164", // Solid Gold Lewis
         };
     }
 }

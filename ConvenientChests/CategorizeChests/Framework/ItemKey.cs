@@ -1,4 +1,8 @@
+using System.Diagnostics.Contracts;
 using StardewValley;
+using StardewValley.GameData.Objects;
+using StardewValley.ItemTypeDefinitions;
+using StardewValley.Menus;
 using StardewValley.Tools;
 using Object = StardewValley.Object;
 
@@ -28,42 +32,58 @@ namespace ConvenientChests.CategorizeChests.Framework {
                itemKey.TypeDefinition == TypeDefinition &&
                itemKey.ItemId == ItemId;
 
+        [Pure]
         public Item GetOne() => ItemRegistry.Create(QualifiedItemId);
         public T GetOne<T>() where T : Item => ItemRegistry.Create<T>(QualifiedItemId);
 
+        public ParsedItemData GetParsedData() => ItemRegistry.GetData(QualifiedItemId);
+        public T GetRawData<T>() => (T) GetParsedData().RawData;
 
         public string GetCategory() {
             switch (TypeDefinition) {
                 case "(T)":
-                case "(W)" when MeleeWeapon.IsScythe(QualifiedItemId):
-                    // move scythes to tools
+                case "(W)" when MeleeWeapon.IsScythe(QualifiedItemId): // move scythes to tools
                     return Object.GetCategoryDisplayName(Object.toolCategory);
 
                 case "(W)":
-                    // weapon subgroups
-                    // return GetOne() switch {
-                    //            MeleeWeapon w => w.type.Value switch {
-                    //                                 1 => Game1.content.LoadString("Strings\\StringsFromCSFiles:Tool.cs.14304"),
-                    //                                 2 => Game1.content.LoadString("Strings\\StringsFromCSFiles:Tool.cs.14305"),
-                    //                                 _ => Game1.content.LoadString("Strings\\StringsFromCSFiles:Tool.cs.14306"),
-                    //                             },
-                    //            Slingshot => new Slingshot().DisplayName,
-                    //            _ => "Weapon",
-                    //        };
-                    return "Weapon";
+                    return "Weapons";
+
+                case "(H)":
+                    return "Hats";
+
+                case "(P)":
+                    return "Pants";
+
+                case "(S)":
+                    return "Shirts";
 
                 case "(FL)":
-                    return Game1.content.LoadString("Strings\\StringsFromCSFiles:Wallpaper.cs.13203");
+                    return Game1.content.LoadString("Strings\\StringsFromCSFiles:Wallpaper.cs.13203"); // Flooring
 
                 case "(WP)":
-                    return Game1.content.LoadString("Strings\\StringsFromCSFiles:Wallpaper.cs.13204");
+                    return Game1.content.LoadString("Strings\\StringsFromCSFiles:Wallpaper.cs.13204"); // Wallpaper
 
-                default:
-                    var categoryName = GetOne().getCategoryName();
-                    return string.IsNullOrEmpty(categoryName)
-                               ? "Miscellaneous"
-                               : categoryName;
+                case "(BC)":
+                    return GetOne<Object>().GetMachineData() != null
+                               ? "Machine"
+                               : Game1.content.LoadString(@"Strings\StringsFromCSFiles:Object.cs.12863"); // Crafting
+
+                case "(M)":
+                    return "Mannequin";
+
+                case "(F)":
+                    return Game1.content.LoadString("Strings\\StringsFromCSFiles:Object.cs.12847"); // Furniture
             }
+
+            // try to use the in-game category logic
+            var item         = GetOne();
+            var categoryName = item.getCategoryName();
+            if (!string.IsNullOrEmpty(categoryName))
+                return categoryName;
+
+            return TypeDefinition == "(O)" && ((Object) item).Edibility > 0
+                       ? "Consumable"
+                       : "Miscellaneous";
         }
     }
 }
