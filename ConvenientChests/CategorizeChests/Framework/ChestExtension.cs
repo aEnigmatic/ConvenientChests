@@ -60,7 +60,8 @@ namespace ConvenientChests.CategorizeChests.Framework {
 
             // nothing remains -> remove item
             if (remainder == null) {
-                sourceInventory.Remove(item);
+                var index = sourceInventory.IndexOf(item);
+                sourceInventory[index] = null;
                 item.Stack = original;
                 return item;
             }
