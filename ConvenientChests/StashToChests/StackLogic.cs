@@ -50,20 +50,8 @@ namespace ConvenientChests.StashToChests {
                                  .Where(i => i != null && f(chest, i))
                                  .ToList();
 
-            if (!toBeMoved.Any())
-                return false;
-
             // try to move items to chest
-            var moved = Game1.player.Items.DumpItemsToChest(chest, toBeMoved).ToList();
-            if (!moved.Any())
-                return false;
-
-            var location = chest.Location;
-            var coords   = location.Objects.Pairs.Single(e => e.Value == chest).Key;
-            foreach (var item in moved)
-                ModEntry.Log($"Moved {item.DisplayName} x{item.Stack} to chest {location.DisplayName} @ {coords}", LogLevel.Debug);
-
-            return true;
+            return toBeMoved.Any() && Game1.player.Items.DumpItemsToChest(chest, toBeMoved).Any();
         }
 
 
