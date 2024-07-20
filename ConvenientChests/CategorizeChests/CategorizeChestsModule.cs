@@ -6,6 +6,7 @@ using ConvenientChests.CategorizeChests.Interface;
 using ConvenientChests.CategorizeChests.Interface.Widgets;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Objects;
@@ -20,7 +21,7 @@ namespace ConvenientChests.CategorizeChests {
         protected string AbsoluteSavePath => Path.Combine(ModEntry.Helper.DirectoryPath, SavePath);
 
         private SaveManager SaveManager { get; set; }
-        private WidgetHost WidgetHost { get; set; }
+        private PerScreen<WidgetHost> ScreenWidgetHost = new PerScreen<WidgetHost>();
 
         internal bool ChestAcceptsItem(Chest chest, Item item) => ChestAcceptsItem(chest, item.ToBase().ToItemKey());
         private bool ChestAcceptsItem(Chest chest, ItemKey itemKey)
@@ -100,14 +101,14 @@ namespace ConvenientChests.CategorizeChests {
             if (itemGrabMenu.context is not Chest chest)
                 return;
 
-            WidgetHost = new WidgetHost(this.Events, this.ModEntry.Helper.Input, this.ModEntry.Helper.Reflection);
+            this.ScreenWidgetHost.Value = new WidgetHost(this.Events, this.ModEntry.Helper.Input, this.ModEntry.Helper.Reflection);
             var overlay = new ChestOverlay(this, chest, itemGrabMenu);
-            WidgetHost.RootWidget.AddChild(overlay);
+            this.ScreenWidgetHost.Value.RootWidget.AddChild(overlay);
         }
 
         private void ClearMenu() {
-            WidgetHost?.Dispose();
-            WidgetHost = null;
+            this.ScreenWidgetHost.Value?.Dispose();
+            this.ScreenWidgetHost.Value = null;
         }
     }
 }
